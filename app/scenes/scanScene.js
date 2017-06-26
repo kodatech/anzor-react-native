@@ -1,17 +1,19 @@
 import React, { Component } from 'react'
 import {
   StyleSheet,
-  Dimensions,
   Vibration,
   TouchableOpacity,
   View,
-  Text
+  Text,
+  AsyncStorage
 } from 'react-native'
+import {Actions} from 'react-native-router-flux'
+import {Button} from 'native-base'
 import Camera from 'react-native-camera'
 export default class ScanScene extends Component {
   constructor (props) {
     super(props)
-    console.log(props.stores.history)
+    // console.log(props.stores.history)
     this.state = {
       scanning: false,
       barCodeScannedValue: false,
@@ -31,7 +33,11 @@ export default class ScanScene extends Component {
     this.setState({ scanning: value })
   }
 
-  _handleBarCodeReadWithButton (e) {
+  async _handleBarCodeReadWithButton (e) {
+    /* await this.refs.camera.capture().then((obj) => {
+      console.log(obj.path)
+    }) */
+    // console.log(this.refs)
     Vibration.vibrate()
     this.setState({ focusStatus: true })
     this._setScanning(true)
@@ -56,7 +62,8 @@ export default class ScanScene extends Component {
 
   _renderCamera () {
     return (
-      <Camera style={styles.preview} onBarCodeRead={this._handleBarCodeReadWithButton.bind(this)}>
+      <Camera style={styles.preview} onBarCodeRead={this._handleBarCodeReadWithButton.bind(this)} captureAudio={false} ref='camera'>
+        <View />
         {this._renderCameraMarker()}
         <View style={this.state.focusStatus ? styles.outercirclegreen : styles.outercirclered}>
           <View style={styles.transparentcircle}>
@@ -67,11 +74,75 @@ export default class ScanScene extends Component {
     )
   }
 
-  _onPressCode (e) {
-    // this.props.onRead(e)
-    console.log('Barcode Found! Type: ' + this.state.barCodeScannedType + '\nData: ' + this.state.barCodeScannedValue)
+  async _onPressCode (e) {
+    // AsyncStorage.clear()
+    await AsyncStorage.getItem('orders').then(stores => {
+      // console.log(typeof this.state.barCodeScannedValue)
+      if (this.state.barCodeScannedValue !== false) {
+        if (stores != null) {
+          let ordersAux = JSON.parse(stores)
+          if (ordersAux[this.state.barCodeScannedValue] !== undefined) {
+            // console.log(ordersAux[this.state.barCodeScannedValue])
+            // console.log(ordersAux[this.state.barCodeScannedValue]['qty'])
+            let value = this.state.barCodeScannedValue.toString(), order = {
+                [value]: ordersAux[this.state.barCodeScannedValue] + 1
+              }
+            AsyncStorage.mergeItem('orders', JSON.stringify(order))
+          } else {
+            let value = this.state.barCodeScannedValue.toString(), order = {
+                [value]: 1
+              }
+            AsyncStorage.mergeItem('orders', JSON.stringify(order))
+          }
+        } else {
+          let value = this.state.barCodeScannedValue.toString(), order = {
+              [value]: 1
+            }
+          AsyncStorage.setItem('orders', JSON.stringify(order))
+        }
+      } else {
+        console.log('Select a bar code please!')
+      }
+    })
+
     this._setFocusStatus(false)
+    Actions.listScene()
   }
+
+  // async _onPressCode (e) {
+  //   // AsyncStorage.clear()
+  //   await AsyncStorage.getItem('orders').then(stores => {
+  //     // console.log(typeof this.state.barCodeScannedValue)
+  //     if (this.state.barCodeScannedValue !== false) {
+  //       if (stores != null) {
+  //         let ordersAux = JSON.parse(stores)
+  //         if (ordersAux[this.state.barCodeScannedValue] !== undefined) {
+  //           // console.log(ordersAux[this.state.barCodeScannedValue])
+  //           // console.log(ordersAux[this.state.barCodeScannedValue]['qty'])
+  //           let value = this.state.barCodeScannedValue.toString(), order = {
+  //               [value]: {[value]: this.state.barCodeScannedValue, 'qty': ordersAux[this.state.barCodeScannedValue]['qty'] + 1}
+  //             }
+  //           AsyncStorage.mergeItem('orders', JSON.stringify(order))
+  //         } else {
+  //           let value = this.state.barCodeScannedValue.toString(), order = {
+  //               [value]: {[value]: this.state.barCodeScannedValue, 'qty': 1}
+  //             }
+  //           AsyncStorage.mergeItem('orders', JSON.stringify(order))
+  //         }
+  //       } else {
+  //         let value = this.state.barCodeScannedValue.toString(), order = {
+  //             [value]: {[value]: this.state.barCodeScannedValue, 'qty': 1}
+  //           }
+  //         AsyncStorage.setItem('orders', JSON.stringify(order))
+  //       }
+  //     } else {
+  //       console.log('Select a bar code please!')
+  //     }
+  //   })
+  //
+  //   this._setFocusStatus(false)
+  //   Actions.listScene()
+  // }
 
   _renderCameraMarker () {
     // if (this.props.showMarker) {
@@ -89,9 +160,9 @@ export default class ScanScene extends Component {
     return (
       <View style={styles.mainContainer}>
         {this._renderCamera()}
-        <View style={styles.infoView}>
+        <Button onPress={Actions.listScene} style={{backgroundColor: 'transparent'}}>
           <Text style={styles.returnMessage}>Return to product List</Text>
-        </View>
+        </Button>
       </View>
     )
   }
@@ -108,9 +179,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   infoView: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: Dimensions.get('window').width,
+    flex: 1,
     height: 50
   },
   capture: {
@@ -122,8 +191,10 @@ const styles = StyleSheet.create({
     margin: 40
   },
   returnMessage: {
+    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    textAlign: 'center'
   },
   rectangleContainer: {
     flex: 1,
