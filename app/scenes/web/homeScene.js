@@ -7,7 +7,6 @@ export default class HomeScene extends Component {
       <WebView
         // source={{uri: 'https://github.com/facebook/react-native'}}
         source={{uri: 'http://www.anzor.co.nz/'}}
-        style={{marginTop: 20}}
       />
     )
   }

@@ -34,6 +34,7 @@ export default class ScanScene extends Component {
   }
 
   async _handleBarCodeReadWithButton (e) {
+    /* DO NOT DELETE THIS BELOW */
     /* await this.refs.camera.capture().then((obj) => {
       console.log(obj.path)
     }) */

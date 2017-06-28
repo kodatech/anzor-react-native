@@ -1,50 +1,66 @@
 import React, { Component } from 'react'
 import {Actions} from 'react-native-router-flux'
-import {Container, Content, Header, Button, Text, Left, Right, Footer, FooterTab, List, ListItem, Body, ActionSheet, Spinner, Input, Form} from 'native-base'
+import {Container, Content, Header, Button, Text, Left, Right, Footer, FooterTab, List, ListItem, Body, ActionSheet, Spinner, Input} from 'native-base'
 import {Dimensions, StyleSheet, AsyncStorage, View} from 'react-native'
 
-var BUTTONS = [
-  'Option 0',
+import {connect} from 'react-redux'
+
+import {getCartList, qtyChanged} from '../actions'
+
+const BUTTONS = [
+  'Clear the list',
   'Option 1',
   'Option 2',
   'Delete',
   'Cancel'
 ]
 
-var DESTRUCTIVE_INDEX = 3
-var CANCEL_INDEX = 4
+const DESTRUCTIVE_INDEX = 3
+const CANCEL_INDEX = 4
 
-export default class ListScene extends Component {
-  constructor (props) {
+/**
+ * Define the scene with cartList.
+ * Search the web site, scan barcode, upload scanned items to cart, view cart and other actions buttons.
+ */
+class ListScene extends Component {
+  /**
+   *
+   * @param {obj} props The first number.
+   */
+  constructor () {
+    // console.log(props)
     // console.log(Dimensions.get('window').height / 7)
-    super(props)
+    super()
     // const ds = new List.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
-    this.state = {
-      store: {
-        history: 'historyStore'
-      }
-    }
+    this.state = {}
   }
 
   componentWillMount () {
-    AsyncStorage.getItem('orders').then((value) => {
-      // console.log(typeof value)
-      var obj = JSON.parse(value)
-      // console.log(typeof obj)
-      const products3 = []
-      for (let key in obj) {
-        products3.push({
-          code: key,
-          value: obj[key]
-        })
-      }
-      // console.log(obj)
-      this.setState({
-        products: value,
-        products3,
-        loading: true
-      })
-    })
+    this.props.getCartList()
+    // AsyncStorage.getItem('orders').then((value) => {
+    //   // console.log(typeof value)
+    //   let obj = JSON.parse(value)
+    //   // console.log(typeof obj)
+    //   const products3 = []
+    //   for (let key in obj) {
+    //     if (obj) {
+    //       products3.push({
+    //         code: key,
+    //         value: obj[key]
+    //       })
+    //     }
+    //   }
+    //   // console.log(obj)
+    //   // this.setState({
+    //   //   products: value,
+    //   //   products3,
+    //   //   loading: true
+    //   // })
+    // })
+  }
+
+  onQtyChange = (id, text) => {
+    this.props.qtyChanged(text, id)
   }
 
   getNewDimensions () {
@@ -56,10 +72,13 @@ export default class ListScene extends Component {
   }
 
   render () {
-    if (!this.state.loading) {
+    // console.log(this.state)
+
+    // if (!this.state.loading) {
+    if (this.props.cartList.loading) {
       return <Spinner style={{height: 400}} />
     }
-    // var items = ['Simon Mignolet', 'Nathaniel Clyne', 'Dejan Lovren', 'Mama Sakho', 'Emre Can']
+    // console.log(this.props.cartList)
     return (
       <Container style={{flex: 1, flexDirection: 'column', justifyContent: 'space-between'}} onLayout={this.getNewDimensions.bind(this)}>
         <Header style={{backgroundColor: 'white', height: this.state.headerButtonHeight + 5, paddingTop: 15, elevation: 0}}>
@@ -75,12 +94,7 @@ export default class ListScene extends Component {
           </Right>
         </Header>
         <Content style={{paddingLeft: 10}}>
-          <ListItem>
-            <Body>
-              <Text>{this.state.products}</Text>
-            </Body>
-          </ ListItem>
-          <List dataArray={this.state.products3}
+          <List dataArray={this.props.cartList.list}
             renderRow={(item) =>
               <ListItem>
                 <Body>
@@ -88,10 +102,10 @@ export default class ListScene extends Component {
                   <Text note>{item.code}</Text>
                   <View style={{flexDirection: 'row'}}>
                     <Text style={{textAlignVertical: 'center'}}>Qty</Text>
-                    <Input style={{width: 20}} value={item.value.toString()} onChangeText={(text) => this.setState({text})} />
+                    <Input style={{width: 20}} placeholder={item.value.toString()} onChangeText={this.onQtyChange.bind(this, item.code)} keyboardType='numeric' />
                     <Text style={{textAlignVertical: 'center', marginLeft: 30}}>x</Text>
                     <Text style={{textAlignVertical: 'center'}}>$</Text>
-                    <Input value='100' onChangeText={(text) => this.setState({text})} />
+                    <Text style={{textAlignVertical: 'center'}}>100</Text>
                     <Text style={{textAlignVertical: 'center'}}>=</Text>
                     <Text style={{textAlignVertical: 'center'}}>100</Text>
                   </View>
@@ -134,22 +148,6 @@ export default class ListScene extends Component {
     )
   }
 }
-/* <Content style={{paddingLeft: 10}}>
-  <Form>
-    <ListItem>
-      <Text>{this.state.products}</Text>
-    </ListItem>
-    <List dataArray={this.state.products3}
-      renderRow={(item) =>
-        <ListItem>
-          <Text>{item.code}</Text>
-          <Text>-</Text>
-          <Text>{item.value}</Text>
-          <Input />
-        </ListItem>
-      } />
-    </Form>
-</Content> */
 
 const styles = StyleSheet.create({
   lineblack: {
@@ -161,3 +159,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent'
   }
 })
+
+const mapStateToProps = state => {
+  // console.log(state)
+  return {
+    cartList: state.cartList
+  }
+}
+
+export default connect(mapStateToProps, {getCartList, qtyChanged})(ListScene)

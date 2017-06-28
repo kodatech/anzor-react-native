@@ -1,0 +1,28 @@
+{
+  "extends": "google",
+  "parser":"babel-eslint",
+  "plugins":["babel"],
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "rules": {
+    "comma-dangle": 0,
+    "require-jsdoc": 0,
+    "react/jsx-no-bind": 0,
+    "space-before-function-paren": 0,
+    "generator-star-spacing": 0,
+    "semi": ["error", "never"],
+    "object-curly-spacing": "off",
+    "no-unused-vars": "off",
+    "max-len": "off",
+    "no-undef": "off",
+    "padded-blocks": "off",
+    "operator-linebreak": "off",
+    "arrow-parens": "off",
+    "linebreak-style": ["error", "unix"]
+  }
+}
