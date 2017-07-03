@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import {AsyncStorage} from 'react-native'
+import {AsyncStorage, NetInfo} from 'react-native'
 import {Spinner} from 'native-base'
 import {ActionConst, Scene, Router} from 'react-native-router-flux'
 
 import ScanScene from './scenes/scanScene'
 import ListScene from './scenes/listScene'
 import LoginScene from './scenes/loginScene'
+
 
 import HomeScene from './scenes/web/homeScene'
 
@@ -29,7 +30,7 @@ export default class AppContainer extends Component {
   async componentWillMount () {
     AsyncStorage.getItem('orders').then((value) => {
       // console.log(typeof value)
-      var obj = JSON.parse(value)
+      let obj = JSON.parse(value)
       // console.log(typeof obj)
       const products = []
       for (let key in obj) {
@@ -55,12 +56,17 @@ export default class AppContainer extends Component {
       loading: true,
       error: ''
     }
+
+    const connectionState = {
+      isConnected: false
+    }
+
     return (
-      <Provider store={createStore(reducers, {cartList}, applyMiddleware(ReduxThunk))}>
+      <Provider store={createStore(reducers, {connectionState}, applyMiddleware(ReduxThunk))}>
         <Router>
           <Scene key='root' direction='horizontal'>
             <Scene key='loginScene' animation='fade' component={LoginScene} title='Login Scene' hideNavBar />
-            <Scene key='listScene' animation='fade' type={ActionConst.REPLACE} component={ListScene} title='List Scene' hideNavBar initial />
+            <Scene key='listScene' animation='fade' type={ActionConst.REPLACE} component={ListScene} title='List Scene' hideNavBar />
             <Scene key='scanScene' animation='fade' component={ScanScene} title='Scan Scene' hideNavBar />
             <Scene key='homeScene' animation='fade' component={HomeScene} title='Home Scene' hideNavBar />
           </Scene>

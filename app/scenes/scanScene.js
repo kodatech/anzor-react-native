@@ -64,7 +64,6 @@ export default class ScanScene extends Component {
   _renderCamera () {
     return (
       <Camera style={styles.preview} onBarCodeRead={this._handleBarCodeReadWithButton.bind(this)} captureAudio={false} ref='camera'>
-        <View />
         {this._renderCameraMarker()}
         <View style={this.state.focusStatus ? styles.outercirclegreen : styles.outercirclered}>
           <View style={styles.transparentcircle}>
@@ -78,7 +77,7 @@ export default class ScanScene extends Component {
   async _onPressCode (e) {
     // AsyncStorage.clear()
     await AsyncStorage.getItem('orders').then(stores => {
-      // console.log(typeof this.state.barCodeScannedValue)
+      // console.log(stores)
       if (this.state.barCodeScannedValue !== false) {
         if (stores != null) {
           let ordersAux = JSON.parse(stores)
@@ -110,41 +109,6 @@ export default class ScanScene extends Component {
     Actions.listScene()
   }
 
-  // async _onPressCode (e) {
-  //   // AsyncStorage.clear()
-  //   await AsyncStorage.getItem('orders').then(stores => {
-  //     // console.log(typeof this.state.barCodeScannedValue)
-  //     if (this.state.barCodeScannedValue !== false) {
-  //       if (stores != null) {
-  //         let ordersAux = JSON.parse(stores)
-  //         if (ordersAux[this.state.barCodeScannedValue] !== undefined) {
-  //           // console.log(ordersAux[this.state.barCodeScannedValue])
-  //           // console.log(ordersAux[this.state.barCodeScannedValue]['qty'])
-  //           let value = this.state.barCodeScannedValue.toString(), order = {
-  //               [value]: {[value]: this.state.barCodeScannedValue, 'qty': ordersAux[this.state.barCodeScannedValue]['qty'] + 1}
-  //             }
-  //           AsyncStorage.mergeItem('orders', JSON.stringify(order))
-  //         } else {
-  //           let value = this.state.barCodeScannedValue.toString(), order = {
-  //               [value]: {[value]: this.state.barCodeScannedValue, 'qty': 1}
-  //             }
-  //           AsyncStorage.mergeItem('orders', JSON.stringify(order))
-  //         }
-  //       } else {
-  //         let value = this.state.barCodeScannedValue.toString(), order = {
-  //             [value]: {[value]: this.state.barCodeScannedValue, 'qty': 1}
-  //           }
-  //         AsyncStorage.setItem('orders', JSON.stringify(order))
-  //       }
-  //     } else {
-  //       console.log('Select a bar code please!')
-  //     }
-  //   })
-  //
-  //   this._setFocusStatus(false)
-  //   Actions.listScene()
-  // }
-
   _renderCameraMarker () {
     // if (this.props.showMarker) {
     return (
@@ -155,6 +119,11 @@ export default class ScanScene extends Component {
     )
     // }
     // return null;
+  }
+
+  returnToProductList() {
+    // console.log(this.refs) {camera: this.refs.camera}
+    Actions.listScene()
   }
 
   render () {
