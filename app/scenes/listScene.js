@@ -7,14 +7,6 @@ import {connect} from 'react-redux'
 
 import {getCartList, qtyChanged, clearList, setIsConnected} from '../actions'
 
-const BUTTONS = [
-  'Clear the list',
-  'Logout'
-]
-
-const DESTRUCTIVE_INDEX = 3
-const CANCEL_INDEX = 4
-
 /**
  * Define the scene with cartList.
  * Search the web site, scan barcode, upload scanned items to cart, view cart and other actions buttons.
@@ -25,18 +17,18 @@ class ListScene extends Component {
    * @param {obj} props The first number.
    */
   constructor () {
-    // console.log(props)
-    // console.log(Dimensions.get('window').height / 7)
+    // AsyncStorage.clear()
     super()
     // const ds = new List.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
     this.state = {
       headerButtonHeight: Dimensions.get('window').height / 4.4,
       headerButtonWidth: Dimensions.get('window').width / 2.3,
-      footerButtonHeight: Dimensions.get('window').height / 7
+      footerButtonHeight: Dimensions.get('window').height / 7,
     }
   }
 
-  componentWillMount () {
+  async componentWillMount () {
+    this.props.cart.loading = true
     this.props.getCartList()
     let address = 'http://www.anzor.co.nz/'
     fetch(address, { method: 'HEAD' })
@@ -75,6 +67,9 @@ class ListScene extends Component {
   }
 
   onQtyChange = (id, text) => {
+    // console.log(id)
+    // console.log(text)
+    this.props.cart.loading = true
     this.props.qtyChanged(text, id)
   }
 
@@ -87,17 +82,22 @@ class ListScene extends Component {
   }
 
   articleList() {
-    console.log(this.props.cart)
+    // console.log(this.props.cart)
     if (!this.props.connectionState.isConnected) {
       return (
         <Content style={{flex: 1, flexDirection: 'column'}}>
-          <Icon style={{fontSize: 100, marginLeft: 130, marginTop: 100, color: 'gray'}} name='cloud' />
+          <Icon style={{fontSize: 100, marginLeft: 130, marginTop: 100, color: 'gray'}} name='md-cloud-outline' />
           <Text style={{fontSize: 10, marginLeft: 125, paddingTop: 10, color: 'gray'}}>No Internet Connection</Text>
         </Content>
       )
     }
+    if (this.props.cart.loading) {
+      return (
+        <Spinner style={{height: 400}} />
+      )
+    }
     if (this.props.connectionState.isConnected) {
-      // console.log(this.props.cart)
+      console.log(this.props)
       return(
         <Content style={{marginLeft: 2}}>
           <List dataArray={this.props.cart.list}
@@ -109,7 +109,13 @@ class ListScene extends Component {
                   <Text note>{item.stockcode}</Text>
                   <View style={{flexDirection: 'row'}}>
                     <Text style={{textAlignVertical: 'center'}}>Qty</Text>
-                    <Input style={{paddingLeft: 1, width: 20}} placeholder={item.value.toString()} onChangeText={this.onQtyChange.bind(this, item.code)} maxLength={4} keyboardType='numeric' />
+                    <Input name={item.code} style={{paddingLeft: 1, width: 20}} placeholder={item.value.toString()}
+                      onEndEditing={
+                        (e) => {
+                          this.onQtyChange(item.code, e.nativeEvent.text)
+                        }
+                      }
+                      maxLength={4} keyboardType='numeric' editable />
                     <Text style={{textAlignVertical: 'center'}}>x</Text>
                     <Text style={{textAlignVertical: 'center'}}>$</Text>
                     <Text style={{textAlignVertical: 'center'}}>{item.price}</Text>
@@ -124,7 +130,7 @@ class ListScene extends Component {
             <Text style={{textAlignVertical: 'center'}}>{this.props.cart.list.length}</Text>
             <Text style={{textAlignVertical: 'center'}}> items</Text>
             <Text style={{textAlignVertical: 'center'}}>Total: </Text>
-            <Text style={{textAlignVertical: 'center'}}> xxxx.xx</Text>
+            <Text style={{textAlignVertical: 'center'}}>{this.props.cart.totalOrder}</Text>
           </ListItem>
         </Content>
       )
@@ -163,26 +169,36 @@ class ListScene extends Component {
               <Text style={{textAlign: 'center', color: 'white'}}>View</Text>
               <Text style={{textAlign: 'center', color: 'white'}}>Cart</Text>
             </Button>
-            <Button onPress={() => ActionSheet.show(
-              {
-                options: BUTTONS,
-                cancelButtonIndex: CANCEL_INDEX,
-                destructiveButtonIndex: DESTRUCTIVE_INDEX,
-                title: 'OTHER ACTIONS'
-              },
-              (buttonIndex) => {
-                if (BUTTONS[buttonIndex] === 'Clear the list') {
-                  this.props.clearList()
-                }
-                // this.setState({ clicked: BUTTONS[buttonIndex] })
-              }
-              )} style={{backgroundColor: 'black', marginLeft: 5, height: this.state.footerButtonHeight, marginRight: 10}}>
+            <Button onPress={this.bottomOptions.bind(this)} style={{backgroundColor: 'black', marginLeft: 5, height: this.state.footerButtonHeight, marginRight: 10}}>
               <Text style={{textAlign: 'center', color: 'white'}}>Other Actions</Text>
             </Button>
           </FooterTab>
         </Footer>
       </Container>
     )
+  }
+  bottomOptions() {
+    const BUTTONS = [
+      'Clear the list',
+      'Logout'
+    ]
+
+    const DESTRUCTIVE_INDEX = 3
+    const CANCEL_INDEX = 4
+    ActionSheet.show(
+      {
+        options: BUTTONS,
+        cancelButtonIndex: CANCEL_INDEX,
+        destructiveButtonIndex: DESTRUCTIVE_INDEX,
+        title: 'OTHER ACTIONS'
+      },
+      (buttonIndex) => {
+        if (BUTTONS[buttonIndex] === 'Clear the list') {
+          this.props.clearList()
+        }
+        // this.setState({ clicked: BUTTONS[buttonIndex] })
+      }
+      )
   }
 }
 

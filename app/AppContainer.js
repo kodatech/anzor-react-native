@@ -66,7 +66,7 @@ export default class AppContainer extends Component {
         <Router>
           <Scene key='root' direction='horizontal'>
             <Scene key='loginScene' animation='fade' component={LoginScene} title='Login Scene' hideNavBar />
-            <Scene key='listScene' animation='fade' type={ActionConst.REPLACE} component={ListScene} title='List Scene' hideNavBar />
+            <Scene key='listScene' animation='fade' type={ActionConst.REPLACE} component={ListScene} title='List Scene' hideNavBar initial />
             <Scene key='scanScene' animation='fade' component={ScanScene} title='Scan Scene' hideNavBar />
             <Scene key='homeScene' animation='fade' component={HomeScene} title='Home Scene' hideNavBar />
           </Scene>
