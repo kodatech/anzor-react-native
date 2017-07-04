@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {AsyncStorage, NetInfo} from 'react-native'
-import {Spinner} from 'native-base'
+import {Spinner, Root} from 'native-base'
 import {ActionConst, Scene, Router} from 'react-native-router-flux'
 
 import ScanScene from './scenes/scanScene'
@@ -62,16 +62,18 @@ export default class AppContainer extends Component {
     }
 
     return (
-      <Provider store={createStore(reducers, {connectionState}, applyMiddleware(ReduxThunk))}>
-        <Router>
-          <Scene key='root' direction='horizontal'>
-            <Scene key='loginScene' animation='fade' component={LoginScene} title='Login Scene' hideNavBar />
-            <Scene key='listScene' animation='fade' type={ActionConst.REPLACE} component={ListScene} title='List Scene' hideNavBar initial />
-            <Scene key='scanScene' animation='fade' component={ScanScene} title='Scan Scene' hideNavBar />
-            <Scene key='homeScene' animation='fade' component={HomeScene} title='Home Scene' hideNavBar />
-          </Scene>
-        </Router>
-      </Provider>
+      <Root>
+        <Provider store={createStore(reducers, {connectionState}, applyMiddleware(ReduxThunk))}>
+          <Router>
+            <Scene key='root' direction='horizontal'>
+              <Scene key='loginScene' animation='fade' component={LoginScene} title='Login Scene' hideNavBar />
+              <Scene key='listScene' animation='fade' type={ActionConst.REPLACE} component={ListScene} title='List Scene' hideNavBar />
+              <Scene key='scanScene' animation='fade' component={ScanScene} title='Scan Scene' hideNavBar />
+              <Scene key='homeScene' animation='fade' component={HomeScene} title='Home Scene' hideNavBar />
+            </Scene>
+          </Router>
+        </Provider>
+      </Root>
     )
   }
 }
