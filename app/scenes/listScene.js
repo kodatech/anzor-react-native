@@ -1,13 +1,15 @@
 import React, { Component } from 'react'
 import {Actions} from 'react-native-router-flux'
 import {Container, Content, Header, Button, Text, Left, Right, Footer, FooterTab, List, ListItem, Body, ActionSheet, Spinner, Input, Icon} from 'native-base'
-import {Dimensions, StyleSheet, AsyncStorage, View, NetInfo, Networking} from 'react-native'
+import {Dimensions, StyleSheet, AsyncStorage, View, NetInfo, Networking, TouchableWithoutFeedback} from 'react-native'
 
 import {connect} from 'react-redux'
 
-import {getCartList, qtyChanged, clearList, setIsConnected} from '../actions'
+import {getCartList, qtyChanged, clearList, deleteProduct, setIsConnected} from '../actions'
 
-/**
+import {ConfirmModalScene} from './confirmModalScene'
+
+/* *
  * Define the scene with cartList.
  * Search the web site, scan barcode, upload scanned items to cart, view cart and other actions buttons.
  */
@@ -24,6 +26,8 @@ class ListScene extends Component {
       headerButtonHeight: Dimensions.get('window').height / 4.4,
       headerButtonWidth: Dimensions.get('window').width / 2.3,
       footerButtonHeight: Dimensions.get('window').height / 7,
+      widthDescription: Dimensions.get('window').width / 1.3,
+      showModal: false
     }
   }
 
@@ -38,23 +42,14 @@ class ListScene extends Component {
       .catch(() => {
         this.props.setIsConnected(false)
       })
-
-    // let obj = await this.props
-    // if (obj.camera) {
-    //   // obj.camera.releaseCamera()
-    //   // delete obj.camera
-    //   // console.log(obj.camera)
-    //   // obj.camera.destroy()
-    // }
   }
 
   async componentDidMount() {
     const dispatchConnected = isConnected => {
-      // this.props.setIsConnected(isConnected)
+      console.log(isConnected)
       let address = 'http://www.anzor.co.nz/'
       fetch(address, { method: 'HEAD' })
         .then(() => {
-          // clearTimeout(tm)
           this.props.setIsConnected(true)
         })
         .catch(() => {
@@ -64,21 +59,37 @@ class ListScene extends Component {
     NetInfo.isConnected.fetch().then(() => {
       NetInfo.isConnected.addEventListener('change', dispatchConnected)
     })
+
   }
 
   onQtyChange = (id, text) => {
-    // console.log(id)
-    // console.log(text)
     this.props.cart.loading = true
     this.props.qtyChanged(text, id)
+  }
+
+  onAccept = () => {
+    this.props.cart.loading = true
+    console.log(this.state.itemToDelete)
+    this.props.deleteProduct(this.state.itemToDelete)
+    this.setState({
+      showModal: false
+    })
+  }
+
+  onDecline = () => {
+    this.setState({
+      showModal: false
+    })
   }
 
   getNewDimensions () {
     this.setState({
       headerButtonHeight: Dimensions.get('window').height / 4.4,
       headerButtonWidth: Dimensions.get('window').width / 2.3,
-      footerButtonHeight: Dimensions.get('window').height / 7
+      footerButtonHeight: Dimensions.get('window').height / 7,
+      widthDescription: Dimensions.get('window').width / 1.3
     })
+    // console.log(this.state.widthDescription)
   }
 
   articleList() {
@@ -93,25 +104,38 @@ class ListScene extends Component {
     }
     if (this.props.cart.loading) {
       return (
-        <Spinner style={{height: 400}} />
+        <Spinner color='#337ab7' style={{height: 400}} />
       )
     }
     if (this.props.connectionState.isConnected) {
-      console.log(this.props)
+      // console.log(this.props)
       return(
         <Content style={{marginLeft: 2}}>
+          <ListItem style={{flexDirection: 'row', justifyContent: 'center'}}>
+            <View>
+              <Text style={{textAlignVertical: 'center', fontSize: 25}}>Scanned Product List</Text>
+            </View>
+          </ListItem>
           <List dataArray={this.props.cart.list}
             renderRow={(item) =>
               <ListItem>
                 <Body>
-                  <Text>{item.description}</Text>
-                  <Text note>{item.code}</Text>
+                  <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                    <Text style={{color: '#337ab7', width: this.state.widthDescription}}>{item.description}</Text>
+                    <TouchableWithoutFeedback onPress={() => this.setState({
+                      showModal: !this.state.showModal,
+                      itemToDelete: item.code
+                    })}><Text style={{fontWeight: 'bold'}}>X</Text></TouchableWithoutFeedback>
+                  </View>
                   <Text note>{item.stockcode}</Text>
-                  <View style={{flexDirection: 'row'}}>
+                  <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-around'}}>
                     <Text style={{textAlignVertical: 'center'}}>Qty</Text>
-                    <Input name={item.code} style={{paddingLeft: 1, width: 20}} placeholder={item.value.toString()}
+                    <Input name={item.code} style={{paddingLeft: 1, width: 50}} placeholder={item.value.toString()}
                       onEndEditing={
                         (e) => {
+                          if (e.nativeEvent.text.trim() === '') {
+                            return
+                          }
                           this.onQtyChange(item.code, e.nativeEvent.text)
                         }
                       }
@@ -126,12 +150,22 @@ class ListScene extends Component {
               </ListItem>
           }>
           </List>
-          <ListItem>
-            <Text style={{textAlignVertical: 'center'}}>{this.props.cart.list.length}</Text>
-            <Text style={{textAlignVertical: 'center'}}> items</Text>
-            <Text style={{textAlignVertical: 'center'}}>Total: </Text>
-            <Text style={{textAlignVertical: 'center'}}>{this.props.cart.totalOrder}</Text>
+          <ListItem style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <View style={{flexDirection: 'row', justifyContent: 'center', paddingLeft: 12}}>
+              <Text style={{textAlignVertical: 'center', fontWeight: 'bold'}}>{this.props.cart.list.length}</Text>
+              <Text style={{textAlignVertical: 'center', fontWeight: 'bold'}}> items</Text>
+            </View>
+            <View style={{flexDirection: 'row', justifyContent: 'center', paddingRight: 12}}>
+              <Text style={{textAlignVertical: 'center', fontWeight: 'bold'}}>Total: </Text>
+              <Text style={{textAlignVertical: 'center', fontWeight: 'bold'}}>{this.props.cart.totalOrder}</Text>
+            </View>
           </ListItem>
+          <ConfirmModalScene
+            visible={this.state.showModal}
+            onAccept={this.onAccept.bind(this)}
+            onDecline={this.onDecline.bind(this)}>
+            Are you sure you want to delete this?
+          </ConfirmModalScene>
         </Content>
       )
     }
@@ -142,35 +176,49 @@ class ListScene extends Component {
 
     // if (!this.state.loading) {
     if (this.props.cart.loading) {
-      return <Spinner style={{height: 400}} />
+      return <Spinner color='#337ab7' style={{height: 400}} />
     }
     // console.log(this.props.cartList)
     return (
       <Container style={{flex: 1, flexDirection: 'column', justifyContent: 'space-between'}} onLayout={this.getNewDimensions.bind(this)}>
-        <Header style={{backgroundColor: 'white', height: this.state.headerButtonHeight + 5, paddingTop: 15, elevation: 0}}>
+        <Header style={{backgroundColor: '#337ab7', height: this.state.headerButtonHeight + 20, paddingTop: 10, paddingBottom: 10, elevation: 0}}>
           <Left>
             <Button onPress={Actions.homeScene} disabled={!this.props.connectionState.isConnected} style={{backgroundColor: 'black', height: this.state.headerButtonHeight, width: this.state.headerButtonWidth}}>
-              <Text style={{flex: 1, fontSize: 20, textAlign: 'center'}}>Search the Website</Text>
+              <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                <Icon style={{fontSize: 50}} color='white' name='search' />
+                <Text style={{fontSize: 15, textAlign: 'center'}}>Search the Website</Text>
+              </View>
             </Button>
           </Left>
           <Right>
             <Button onPress={Actions.scanScene} disabled={!this.props.connectionState.isConnected} style={{backgroundColor: 'black', height: this.state.headerButtonHeight, width: this.state.headerButtonWidth}}>
-              <Text style={{flex: 1, fontSize: 20, textAlign: 'center'}}>Scan Barcode</Text>
+              <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                <Icon style={{fontSize: 50}} color='white' name='md-barcode' />
+                <Text style={{fontSize: 15, textAlign: 'center'}}>Scan Barcode</Text>
+              </View>
             </Button>
           </Right>
         </Header>
           {this.articleList()}
-        <Footer style={{backgroundColor: 'white', height: this.state.footerButtonHeight + 10, elevation: 0}}>
-          <FooterTab style={{backgroundColor: 'white'}}>
-            <Button style={{backgroundColor: 'black', height: this.state.footerButtonHeight, marginLeft: 10, marginRight: 5}}>
-              <Text style={{textAlign: 'center', color: 'white'}}>Upload Scanned Items to Cart</Text>
+        <Footer style={{backgroundColor: 'white', height: this.state.footerButtonHeight + 20, elevation: 0}}>
+          <FooterTab style={{backgroundColor: 'black'}}>
+            <Button style={{backgroundColor: '#337ab7', height: this.state.footerButtonHeight, marginLeft: 10, marginRight: 5}}>
+              <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                <Icon style={{fontSize: 35}} color='white' name='ios-cloud-upload-outline' />
+                <Text style={{textAlign: 'center', color: 'white'}}>Upload to Cart</Text>
+              </View>
             </Button>
-            <Button style={{backgroundColor: 'black', marginLeft: 5, height: this.state.footerButtonHeight, marginRight: 5}}>
-              <Text style={{textAlign: 'center', color: 'white'}}>View</Text>
-              <Text style={{textAlign: 'center', color: 'white'}}>Cart</Text>
+            <Button onPress={Actions.cartScene} disabled={!this.props.connectionState.isConnected} style={{backgroundColor: '#337ab7', marginLeft: 5, height: this.state.footerButtonHeight, marginRight: 5}}>
+              <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                <Icon style={{fontSize: 35}} color='white' name='ios-cart-outline' />
+                <Text style={{textAlign: 'center', color: 'white'}}>View Cart</Text>
+              </View>
             </Button>
-            <Button onPress={this.bottomOptions.bind(this)} style={{backgroundColor: 'black', marginLeft: 5, height: this.state.footerButtonHeight, marginRight: 10}}>
-              <Text style={{textAlign: 'center', color: 'white'}}>Other Actions</Text>
+            <Button onPress={this.bottomOptions.bind(this)} style={{backgroundColor: '#337ab7', marginLeft: 5, height: this.state.footerButtonHeight, marginRight: 10}}>
+              <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                <Icon style={{fontSize: 35}} color='white' name='ios-list-outline' />
+                <Text style={{textAlign: 'center', color: 'white'}}>Other Actions</Text>
+              </View>
             </Button>
           </FooterTab>
         </Footer>
@@ -221,4 +269,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, {getCartList, qtyChanged, clearList, setIsConnected})(ListScene)
+export default connect(mapStateToProps, {getCartList, qtyChanged, clearList, deleteProduct, setIsConnected})(ListScene)

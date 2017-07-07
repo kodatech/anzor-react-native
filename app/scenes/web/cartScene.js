@@ -3,8 +3,8 @@ import { WebView } from 'react-native'
 import { Spinner } from 'native-base'
 import {connect} from 'react-redux'
 
-// import {loadHome} from '../../actions'
-class HomeScene extends Component {
+
+class CartScene extends Component {
 
   renderLoading() {
     return <Spinner color='#337ab7' style={{height: 400}} />
@@ -18,7 +18,7 @@ class HomeScene extends Component {
     // }
     return (
       <WebView
-        source={{uri: 'http://www.anzor.co.nz/'}}
+        source={{uri: 'http://www.anzor.co.nz/anzor_services/cart?uid=1'}}
         renderLoading={this.renderLoading}
         startInLoadingState
       />
@@ -31,4 +31,4 @@ const mapStateToProps = state => {
   return {loading: true}
 }
 
-export default connect(mapStateToProps, {})(HomeScene)
+export default connect(mapStateToProps, {})(CartScene)

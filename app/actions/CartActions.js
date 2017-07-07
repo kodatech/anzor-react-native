@@ -5,15 +5,14 @@ import {
   QTY_CHANGED_FAIL,
   CART_LIST_SUCCESS,
   CLEAR_LIST,
-  CART_LIST_FAIL
+  CART_LIST_FAIL,
+  DELETE_PRODUCT_SUCCESS,
+  DELETE_PRODUCT_FAIL,
+  CART_NO_CONNECTED
 } from './types'
 
-export const deleteListItem = (id) => {
-
-}
-
 export const clearList = () => {
-  AsyncStorage.clear()
+  AsyncStorage.removeItem('orders')
   return ({
     type: CLEAR_LIST,
     loading: true,
@@ -23,7 +22,8 @@ export const clearList = () => {
 }
 
 export const qtyChanged = (text, id) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
+    console.log('text', text)
     if (text.trim() === '') {
       return ({
         type: QTY_CHANGED_FAIL,
@@ -74,7 +74,15 @@ export const qtyChanged = (text, id) => {
                 }
               })
               .catch((error) => {
-                console.error(error + ' IN FETCH CATCH')
+                dispatch({
+                  loading: false,
+                  isConnected: false,
+                  error: error
+                })
+                // console.error(error + ' IN FETCH CATCH QTY_CHANGED')
+              })
+              .then(() => {
+                console.log('after catch')
               })
           }
         })
@@ -86,7 +94,7 @@ export const qtyChanged = (text, id) => {
 }
 
 export const getCartList = () => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     AsyncStorage.getItem('orders').then(async (storedList) => {
       let obj = JSON.parse(storedList)
       if (obj === null) {
@@ -95,6 +103,8 @@ export const getCartList = () => {
           payload: []
         })
       }
+      let state = getState()
+      console.log(state.connectionState)
       const products = []
       let totalOrder = 0
       for (let key in obj) {
@@ -122,7 +132,81 @@ export const getCartList = () => {
             }
           })
           .catch((error) => {
-            console.error(error + ' IN FETCH CATCH')
+            // console.error(' IN FETCH CATCH CART_LIST_SUCCESS', error)
+            // if (error) {
+            //   return ({isConnected: false})
+            // }
+            // dispatch({
+            //   type: CART_NO_CONNECTED,
+            //   isConnected: false
+            // })
+          })
+      }
+      // console.log(Object.keys(obj).length)
+      // console.log(products.length)
+    })
+  }
+}
+
+export const deleteProduct = (id) => {
+  return async (dispatch) => {
+    AsyncStorage.getItem('orders').then(async (storedList) => {
+      let obj = JSON.parse(storedList)
+      if (obj === null) {
+        dispatch({
+          type: DELETE_PRODUCT_FAIL,
+          payload: []
+        })
+      }
+      if (Object.keys(obj).length === 1) {
+        AsyncStorage.removeItem('orders')
+        dispatch({
+          type: DELETE_PRODUCT_SUCCESS,
+          payload: [],
+          totalOrder: 0,
+          loading: true
+        })
+      }
+      const products = []
+      let totalOrder = 0
+      AsyncStorage.removeItem('orders')
+      AsyncStorage.setItem('orders')
+      for (let key in obj) {
+        let url = `http://anzornz.kodait.com/anzor_services/product?barCode=${key}&uid=1`
+        fetch(url)
+          .then((response) => response.json())
+          .then((responseJson) => {
+            if (id !== key) {
+              let value = key.toString(), order = {
+                  [value]: obj[key]
+                }
+              AsyncStorage.mergeItem('orders', JSON.stringify(order))
+              products.push({
+                description: responseJson[0].description,
+                stockcode: responseJson[0].stockcode,
+                price: parseFloat(responseJson[0].sell_price_1).toFixed(3),
+                code: key,
+                value: obj[key],
+                total: parseFloat(obj[key] * responseJson[0].sell_price_1).toFixed(3)
+              })
+              totalOrder = parseFloat(parseFloat(totalOrder) + parseFloat(obj[key] * responseJson[0].sell_price_1)).toFixed(3)
+              if (Object.keys(obj).length === (products.length + 1)) {
+                dispatch({
+                  type: DELETE_PRODUCT_SUCCESS,
+                  payload: products,
+                  totalOrder: totalOrder,
+                  loading: true
+                })
+              }
+            }
+          })
+          .catch((error) => {
+            console.error(error + ' IN FETCH CATCH CART_LIST_SUCCESS')
+            // dispatch({
+            //   loading: false,
+            //   isConnected: false,
+            //   error: error
+            // })
           })
       }
       // console.log(Object.keys(obj).length)
