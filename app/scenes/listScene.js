@@ -128,18 +128,20 @@ class ListScene extends Component {
                     })}><Text style={{fontWeight: 'bold'}}>X</Text></TouchableWithoutFeedback>
                   </View>
                   <Text note>{item.stockcode}</Text>
-                  <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-around'}}>
+                  <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-start', alignContent: 'flex-start'}}>
                     <Text style={{textAlignVertical: 'center'}}>Qty</Text>
-                    <Input name={item.code} style={{paddingLeft: 1, width: 50}} placeholder={item.value.toString()}
-                      onEndEditing={
-                        (e) => {
-                          if (e.nativeEvent.text.trim() === '') {
-                            return
+                    <View style={{width: 40}}>
+                      <Input name={item.code} style={{paddingLeft: 1}} placeholder={item.value.toString()}
+                        onEndEditing={
+                          (e) => {
+                            if (e.nativeEvent.text.trim() === '') {
+                              return
+                            }
+                            this.onQtyChange(item.code, e.nativeEvent.text)
                           }
-                          this.onQtyChange(item.code, e.nativeEvent.text)
                         }
-                      }
-                      maxLength={4} keyboardType='numeric' editable />
+                        keyboardType='numeric' editable />
+                    </View>
                     <Text style={{textAlignVertical: 'center'}}>x</Text>
                     <Text style={{textAlignVertical: 'center'}}>$</Text>
                     <Text style={{textAlignVertical: 'center'}}>{item.price}</Text>
