@@ -14,8 +14,8 @@ const ConfirmModalScene = ({ children, visible, onAccept, onDecline }) => {
           <Text style={styles.textStyle}>{children}</Text>
         </View>
         <View style={styles.cardSectionStyle}>
-          <TouchableOpacity style={{marginLeft: 20, backgroundColor: '#337ab7', width: 50, height: 30}} onPress={onAccept}><Text style={{justifyContent: 'center', color: 'white'}}>Yes</Text></TouchableOpacity>
-          <TouchableOpacity style={{marginLeft: 80, backgroundColor: '#337ab7', width: 50, height: 30}} onPress={onDecline}><Text style={{justifyContent: 'center', color: 'white'}}>No</Text></TouchableOpacity>
+          <TouchableOpacity style={{marginLeft: 20, backgroundColor: '#0083a9', width: 50, height: 30}} onPress={onAccept}><Text style={{justifyContent: 'center', color: 'white', textAlign: 'center'}}>Yes</Text></TouchableOpacity>
+          <TouchableOpacity style={{marginLeft: 80, backgroundColor: '#0083a9', width: 50, height: 30}} onPress={onDecline}><Text style={{justifyContent: 'center', color: 'white', textAlign: 'center'}}>No</Text></TouchableOpacity>
         </View>
       </View>
     </Modal>

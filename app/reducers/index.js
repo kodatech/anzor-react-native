@@ -1,8 +1,10 @@
 import { combineReducers } from 'redux'
 import CartReducer from './CartReducer'
 import ConnectionReducer from './ConnectionReducer'
+import AuthReducer from './AuthReducer'
 
 export default combineReducers({
-  cartList: CartReducer,
-  connectionState: ConnectionReducer
+  auth: AuthReducer,
+  cart: CartReducer,
+  conn: ConnectionReducer
 })
