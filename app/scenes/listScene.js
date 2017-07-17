@@ -31,7 +31,7 @@ class ListScene extends Component {
   }
 
   async componentWillMount () {
-    this.props.checkIfLoggedOn()
+    this.props.checkIfLoggedOn('listScene')
     this.props.cart.loading = true
     this.props.getCartList()
     let address = 'http://www.anzor.co.nz/'
@@ -74,7 +74,7 @@ class ListScene extends Component {
 
   onAccept = () => {
     this.props.cart.loading = true
-    console.log(this.state.itemToDelete)
+    // console.log(this.state.itemToDelete)
     this.props.deleteProduct(this.state.itemToDelete)
     this.setState({
       showModal: false
@@ -82,7 +82,7 @@ class ListScene extends Component {
   }
 
   onDecline = () => {
-    console.log(this.state.itemToDelete)
+    // console.log(this.state.itemToDelete)
     this.setState({
       showModal: false
     })
@@ -113,7 +113,9 @@ class ListScene extends Component {
       )
     }
     if (this.props.conn.isConnected) {
-      return (
+      console.log(this.props.cart.loading)
+      if(!this.props.cart.loading) {
+        return (
         <Content style={{marginLeft: 2}}>
           <ListItem style={{flexDirection: 'row', justifyContent: 'center'}}>
             <View>
@@ -158,6 +160,10 @@ class ListScene extends Component {
               </ListItem>
           }>
           </List>
+          <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center'}}>
+            <Text style={{color: 'green', fontSize: 30, textAlign: 'center'}}>{this.props.cart.message}</Text>
+            <Text style={{color: 'green', fontSize: 100, textAlign: 'center'}}>{this.props.cart.arrow}</Text>
+          </View>
           <ListItem style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <View style={{flexDirection: 'row', justifyContent: 'center', paddingLeft: 12}}>
               <Text style={{textAlignVertical: 'center', fontWeight: 'bold'}}>{this.props.cart.list.length}</Text>
@@ -175,7 +181,12 @@ class ListScene extends Component {
             Are you sure you want to delete this?
           </ConfirmModalScene>
         </Content>
-      )
+        )
+      } else {
+        return (
+          <Spinner color='#0083a9' style={{height: 400}} />
+        )
+      }
     }
   }
 
@@ -209,7 +220,12 @@ class ListScene extends Component {
           {this.articleList()}
         <Footer style={{backgroundColor: 'white', height: this.state.footerButtonHeight + 20, elevation: 0}}>
           <FooterTab style={{backgroundColor: 'black'}}>
-            <Button onPress={this.onCheckOut.bind(this)} disabled={!this.props.conn.isConnected} style={{backgroundColor: '#0083a9', height: this.state.footerButtonHeight, marginLeft: 10, marginRight: 5}}>
+            <Button
+              onPress={
+                this.onCheckOut.bind(this)
+              }
+              disabled={!this.props.conn.isConnected}
+              style={{backgroundColor: '#0083a9', height: this.state.footerButtonHeight, marginLeft: 10, marginRight: 5}}>
               <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
                 <Icon style={{fontSize: 35}} color='white' name='ios-cloud-upload-outline' />
                 <Text style={{textAlign: 'center', color: 'white'}}>Upload to Cart</Text>

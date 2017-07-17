@@ -38,7 +38,7 @@ class ScanScene extends Component {
   }
 
   async componentDidMount () {
-    // this.props.checkIfLoggedOn()
+    this.props.checkIfLoggedOn('scanScene')
   }
 
   _setBarCodeScanned (e) {

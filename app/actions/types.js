@@ -5,9 +5,11 @@ export const CART_LIST_SUCCESS = 'cart_list_success'
 export const CLEAR_LIST = 'clear_list'
 export const CART_LIST_FAIL = 'cart_list_fail'
 
+export const CHECK_OUT = 'check_out'
 export const CHECK_OUT_SUCCESS = 'check_out_success'
 export const CHECK_OUT_FAIL = 'check_out_fail'
 
+export const ADD_NEW_PRODUCT = 'add_new_product'
 export const STORE_PRODUCT_SUCCESS = 'store_product_success'
 export const STORE_PRODUCT_FAIL = 'store_product_fail'
 

@@ -9,7 +9,7 @@ class WelcomeScene extends Component {
 
   componentDidMount() {
     // AsyncStorage.clear()
-    this.props.checkIfLoggedOn()
+    this.props.checkIfLoggedOn('listScene')
   }
 
   // componentWillMount() {
@@ -32,7 +32,8 @@ class WelcomeScene extends Component {
 const mapStateToProps = state => {
   return {
     user: state.auth.user,
-    loading: state.auth.loading
+    loading: state.auth.loading,
+    auth: state.auth
   }
 }
 

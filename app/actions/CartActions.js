@@ -1,4 +1,5 @@
 import { AsyncStorage } from 'react-native'
+import { Actions } from 'react-native-router-flux'
 
 import {
   QTY_CHANGED,
@@ -8,11 +9,14 @@ import {
   CART_LIST_FAIL,
   DELETE_PRODUCT_SUCCESS,
   DELETE_PRODUCT_FAIL,
+  CHECK_OUT,
   CHECK_OUT_SUCCESS,
   CHECK_OUT_FAIL,
+  ADD_NEW_PRODUCT,
   STORE_PRODUCT_SUCCESS,
   STORE_PRODUCT_FAIL,
-  CART_NO_CONNECTED
+  CART_NO_CONNECTED,
+  LOGGED_ON_FAIL
 } from './types'
 
 export const clearList = () => {
@@ -314,55 +318,78 @@ export const deleteProduct = (id) => {
 
 export const checkOut = () => {
   return async (dispatch, getState) => {
-    // let skuQty = [15]
-    // let sku = ['SDM416']
-    // let obj = {}
-    let state = getState()
-    let list = state.cart.list
-    // console.log(list)
-    let url = 'http://anzornz.kodait.com/anzor_services/checkout?'
-    // let url = 'http://anzorbeta.dev.kodait.com/anzor_services/checkout?'
-    for (let key in list) {
-      if (key) {
-        // console.log(key)
-        // console.log(list[key].value)
-        let skuQty = [list[key].value]
-        let sky = [list[key].stockcode]
-        // console.log(skuQty)
-        // console.log(sky)
-        url += `skuQty[${key}]=${skuQty[0]}&sku[${key}]=${list[key].stockcode}&`
-      }
-    }
-    url += `uid=${state.auth.uid}`
-    // console.log(url)
-    // for (let key in obj) {
-      // http://anzorbeta.dev.kodait.com/anzor_services/checkout?skuQty[0]=1&skuQty[1]=5&sku[0]=ZBBPFA&sku[1]=CHCL605&uid=1
-      // fetch(`http://anzornz.kodait.com/anzor_services/checkout?skuQty[0]=${skuQty[0]}&sku[0]=${sku[0]}&uid=1`)
-    fetch(url)
-      .then(response => response.json())
-      .then((responseJson) => {
-        if (responseJson) {
-          // console.log(responseJson)
-          AsyncStorage.removeItem('orders')
-          dispatch({
-            type: CHECK_OUT_SUCCESS,
-            payload: [],
-            totalOrder: 0
+    dispatch({type: CHECK_OUT})
+    AsyncStorage.getItem('user').then(user => {
+      // console.log(user)
+      if (user) {
+        AsyncStorage.getItem('email').then(email => {
+          AsyncStorage.getItem('pass').then(pass => {
+            // loginUser(email, pass)
+            email = email.substr(1)
+            email = email.substr(0, email.length - 1)
+            pass = pass.substr(1)
+            pass = pass.substr(0, pass.length - 1)
+            let url = `http://anzornz.kodait.com/anzor_services/login?name=${email}&pass=${pass}`
+            // console.log(url)
+            fetch(url)
+            .then((response) => response.json())
+            .then((responseJson) => {
+              // console.log('RJ 2', responseJson)
+              if (responseJson) {
+                let state = getState()
+                let list = state.cart.list
+                let url = 'http://anzornz.kodait.com/anzor_services/checkout?'
+                // let url = 'http://anzorbeta.dev.kodait.com/anzor_services/checkout?'
+                for (let key in list) {
+                  if (key) {
+                    // console.log(key)
+                    // console.log(list[key].value)
+                    let skuQty = [list[key].value]
+                    let sky = [list[key].stockcode]
+                    // console.log(skuQty)
+                    // console.log(sky)
+                    url += `skuQty[${key}]=${skuQty[0]}&sku[${key}]=${list[key].stockcode}&`
+                  }
+                }
+                url += `uid=${state.auth.uid}`
+                // http://anzorbeta.dev.kodait.com/anzor_services/checkout?skuQty[0]=1&skuQty[1]=5&sku[0]=ZBBPFA&sku[1]=CHCL605&uid=1
+                // fetch(`http://anzornz.kodait.com/anzor_services/checkout?skuQty[0]=${skuQty[0]}&sku[0]=${sku[0]}&uid=1`)
+                fetch(url)
+                  .then(response => response.json())
+                  .then((responseJson) => {
+                    if (responseJson) {
+                      // console.log(responseJson)
+                      AsyncStorage.removeItem('orders')
+                      dispatch({
+                        type: CHECK_OUT_SUCCESS,
+                        payload: [],
+                        totalOrder: 0
+                      })
+                    }
+                  })
+                  .catch((error) => {
+                    console.log('error', error)
+                    dispatch({
+                      type: CHECK_OUT_FAIL
+                    })
+                  })
+              } else {
+                dispatch({
+                  type: LOGGED_ON_FAIL,
+                })
+                Actions.loginScene()
+              }
+            })
           })
-        }
-      })
-      .catch((error) => {
-        console.log('error', error)
-        dispatch({
-          type: CHECK_OUT_FAIL
         })
-      })
-    // }
+      }
+    })
   }
 }
 
 export const addNewProduct = (barCodeScannedValue) => {
   return async (dispatch, getState) => {
+    dispatch({type: ADD_NEW_PRODUCT})
     let state = getState()
     let url = `http://anzornz.kodait.com/anzor_services/product?barCode=${barCodeScannedValue}&uid=${state.auth.uid}`
     // let url = `http://anzorbeta.dev.kodait.com/anzor_services/product?barCode=${key}&uid=1`

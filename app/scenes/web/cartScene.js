@@ -16,6 +16,10 @@ class CartScene extends Component {
     this.state = { canGoBack: false }
   }
 
+  componentWillMount() {
+    this.props.checkIfLoggedOn('cartScene')
+  }
+
   renderLoading() {
     return <Spinner color='#0083a9' style={{height: 400}} />
   }

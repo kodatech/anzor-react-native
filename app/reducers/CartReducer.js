@@ -8,8 +8,10 @@ import {
   CART_LIST_FAIL,
   DELETE_PRODUCT_SUCCESS,
   DELETE_PRODUCT_FAIL,
+  CHECK_OUT,
   CHECK_OUT_SUCCESS,
   CHECK_OUT_FAIL,
+  ADD_NEW_PRODUCT,
   STORE_PRODUCT_SUCCESS,
   STORE_PRODUCT_FAIL,
   CART_NO_CONNECTED
@@ -40,12 +42,21 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, list: action.payload, loading: false, totalOrder: action.totalOrder, error: '' }
     case DELETE_PRODUCT_FAIL:
       return { ...state, list: action.payload, loading: false, error: '' }
+    case CHECK_OUT:
+      return { ...state, loading: true, error: '' }
     case CHECK_OUT_SUCCESS:
-      return { ...state, list: action.payload, totalOrder: action.totalOrder }
+      return { ...state,
+        list: action.payload,
+        totalOrder: action.totalOrder,
+        loading: false,
+        message: 'Great! Your products have been uploaded to your cart, press here to view ',
+        arrow: '↓'}
     case CHECK_OUT_FAIL:
       return state
+    case ADD_NEW_PRODUCT:
+      return { ...state, loading: true }
     case STORE_PRODUCT_SUCCESS:
-      return { ...state, list: action.payload, loading: false, totalOrder: action.totalOrder, error: '' }
+      return { ...state, list: action.payload, loading: false, totalOrder: action.totalOrder, error: '', message: '', arrow: '' }
     case STORE_PRODUCT_FAIL:
       return { ...state, error: 'This is not a valid product' }
     case CART_NO_CONNECTED:

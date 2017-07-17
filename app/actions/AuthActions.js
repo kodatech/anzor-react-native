@@ -47,7 +47,8 @@ export const loginUser = (email, password) => {
   }
 }
 
-export const checkIfLoggedOn = (dispatch) => {
+export const checkIfLoggedOn = (scene, dispatch) => {
+  // console.log(test)
   return (dispatch) => {
     dispatch({type: CHECK_IF_LOGGED_ON})
     AsyncStorage.getItem('user').then(user => {
@@ -67,7 +68,7 @@ export const checkIfLoggedOn = (dispatch) => {
             .then((responseJson) => {
               // console.log('RJ 2', responseJson)
               if (responseJson) {
-                loggedOnSuccess(dispatch, user, responseJson[0].uid, email, pass)
+                loggedOnSuccess(dispatch, user, responseJson[0].uid, email, pass, scene)
               } else {
                 loggedOnFail(dispatch)
               }
@@ -92,7 +93,7 @@ export const logOut = () => {
   }
 }
 
-const loggedOnSuccess = (dispatch, user, uid, email, pass) => {
+const loggedOnSuccess = (dispatch, user, uid, email, pass, scene) => {
   dispatch({
     type: LOGGED_ON_SUCCESS,
     payload: user,
@@ -100,7 +101,19 @@ const loggedOnSuccess = (dispatch, user, uid, email, pass) => {
     email: email,
     password: pass
   })
-  Actions.listScene()
+  switch (scene) {
+    case 'listScene':
+      Actions.listScene()
+      break
+    case 'scanScene':
+      Actions.scanScene()
+      break
+    case 'cartScene':
+      Actions.cartScene()
+      break
+    default:
+      Actions.loginScene()
+  }
 }
 
 const loggedOnFail = (dispatch) => {
