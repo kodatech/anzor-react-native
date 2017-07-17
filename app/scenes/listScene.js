@@ -32,7 +32,7 @@ class ListScene extends Component {
 
   async componentWillMount () {
     this.props.checkIfLoggedOn('listScene')
-    this.props.cart.loading = true
+    // this.props.cart.loading = true
     this.props.getCartList()
     let address = 'http://www.anzor.co.nz/'
     fetch(address, { method: 'HEAD' })
@@ -63,7 +63,7 @@ class ListScene extends Component {
   }
 
   onQtyChange = (id, text) => {
-    this.props.cart.loading = true
+    // this.props.cart.loading = true
     this.props.qtyChanged(text, id)
   }
 
@@ -73,7 +73,7 @@ class ListScene extends Component {
   }
 
   onAccept = () => {
-    this.props.cart.loading = true
+    // this.props.cart.loading = true
     // console.log(this.state.itemToDelete)
     this.props.deleteProduct(this.state.itemToDelete)
     this.setState({
@@ -113,7 +113,7 @@ class ListScene extends Component {
       )
     }
     if (this.props.conn.isConnected) {
-      console.log(this.props.cart.loading)
+      // console.log(this.props.cart.loading)
       if(!this.props.cart.loading) {
         return (
         <Content style={{marginLeft: 2}}>

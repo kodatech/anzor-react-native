@@ -6,6 +6,7 @@ import {
   CART_LIST_SUCCESS,
   CLEAR_LIST,
   CART_LIST_FAIL,
+  DELETE_PRODUCT,
   DELETE_PRODUCT_SUCCESS,
   DELETE_PRODUCT_FAIL,
   CHECK_OUT,
@@ -38,6 +39,8 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, list: action.payload, loading: false, error: '', totalOrder: 0 }
     case CLEAR_LIST:
       return { ...state, list: action.payload, loading: false, totalOrder: action.totalOrder }
+    case DELETE_PRODUCT:
+      return { ...state, loading: true }
     case DELETE_PRODUCT_SUCCESS:
       return { ...state, list: action.payload, loading: false, totalOrder: action.totalOrder, error: '' }
     case DELETE_PRODUCT_FAIL:

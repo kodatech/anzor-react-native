@@ -15,6 +15,7 @@ export const STORE_PRODUCT_FAIL = 'store_product_fail'
 
 export const CART_NO_CONNECTED = 'cart_no_connected'
 
+export const DELETE_PRODUCT = 'delete_product'
 export const DELETE_PRODUCT_SUCCESS = 'delete_product_success'
 export const DELETE_PRODUCT_FAIL = 'delete_product_fail'
 

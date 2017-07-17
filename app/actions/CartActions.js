@@ -7,6 +7,7 @@ import {
   CART_LIST_SUCCESS,
   CLEAR_LIST,
   CART_LIST_FAIL,
+  DELETE_PRODUCT,
   DELETE_PRODUCT_SUCCESS,
   DELETE_PRODUCT_FAIL,
   CHECK_OUT,
@@ -240,6 +241,7 @@ export const getCartList = () => {
 
 export const deleteProduct = (id) => {
   return async (dispatch, getState) => {
+    dispatch({type: DELETE_PRODUCT})
     let state = getState()
     AsyncStorage.getItem('orders').then(async (storedList) => {
       let obj = JSON.parse(storedList)
@@ -464,8 +466,7 @@ export const addNewProduct = (barCodeScannedValue) => {
                         dispatch({
                           type: STORE_PRODUCT_SUCCESS,
                           payload: products,
-                          totalOrder: totalOrder,
-                          loading: true
+                          totalOrder: totalOrder
                         })
                       }
                     } else {
