@@ -2,11 +2,12 @@ import React, { Component } from 'react'
 import {Actions} from 'react-native-router-flux'
 import {Container, Content, Header, Button, Text, Left, Right, Footer, FooterTab, List, ListItem, Body, ActionSheet, Spinner, Input, Icon} from 'native-base'
 import {Dimensions, StyleSheet, AsyncStorage, View, NetInfo, Networking, TouchableWithoutFeedback} from 'react-native'
-
 import {connect} from 'react-redux'
 import {getCartList, qtyChanged, clearList, deleteProduct, setIsConnected, checkOut, checkIfLoggedOn, logOut} from '../actions'
-
 import {ConfirmModalScene} from './confirmModalScene'
+import { ADDRESS } from '../actions/configuration'
+import Spinnera from './loaders/Spinnera'
+import Spinnerd from './loaders/Spinnerd'
 
 /* *
  * Define the scene with cart.
@@ -34,7 +35,7 @@ class ListScene extends Component {
     this.props.checkIfLoggedOn('listScene')
     // this.props.cart.loading = true
     this.props.getCartList()
-    let address = 'http://www.anzor.co.nz/'
+    let address = ADDRESS
     fetch(address, { method: 'HEAD' })
       .then(() => {
         this.props.setIsConnected(true)
@@ -47,7 +48,7 @@ class ListScene extends Component {
   async componentDidMount() {
     const dispatchConnected = isConnected => {
       console.log(isConnected)
-      let address = 'http://www.anzor.co.nz/'
+      let address = ADDRESS
       fetch(address, { method: 'HEAD' })
         .then(() => {
           this.props.setIsConnected(true)
@@ -107,15 +108,15 @@ class ListScene extends Component {
         </Content>
       )
     }
-    if (this.props.cart.loading) {
-      return (
-        <Spinner color='#0083a9' style={{height: 400}} />
-      )
-    }
+    // if (this.props.cart.loading) {
+    //   return (
+    //     <Spinner color='#0083a9' style={{height: 400}} />
+    //   )
+    // }
     if (this.props.conn.isConnected) {
       // console.log(this.props.cart.loading)
-      if(!this.props.cart.loading) {
-        return (
+      // if(!this.props.cart.loading) {
+      return (
         <Content style={{marginLeft: 2}}>
           <ListItem style={{flexDirection: 'row', justifyContent: 'center'}}>
             <View>
@@ -129,7 +130,7 @@ class ListScene extends Component {
                 <Body>
                   <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                     <Text style={{color: '#0083a9', width: this.state.widthDescription}}>{item.description}</Text>
-                    <TouchableWithoutFeedback onPress={() => this.setState({
+                    <TouchableWithoutFeedback style={{width: 40, height: 40}} onPress={() => this.setState({
                       showModal: !this.state.showModal,
                       itemToDelete: item.code
                     })}><Text style={{fontWeight: 'bold'}}>X</Text></TouchableWithoutFeedback>
@@ -158,8 +159,7 @@ class ListScene extends Component {
                   </View>
                 </Body>
               </ListItem>
-          }>
-          </List>
+          } />
           <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center'}}>
             <Text style={{color: 'green', fontSize: 30, textAlign: 'center'}}>{this.props.cart.message}</Text>
             <Text style={{color: 'green', fontSize: 100, textAlign: 'center'}}>{this.props.cart.arrow}</Text>
@@ -181,21 +181,22 @@ class ListScene extends Component {
             Are you sure you want to delete this?
           </ConfirmModalScene>
         </Content>
-        )
-      } else {
-        return (
-          <Spinner color='#0083a9' style={{height: 400}} />
-        )
-      }
+      )
+      // }
+      // else {
+      //   return (
+      //     <Spinner color='#0083a9' style={{height: 400}} />
+      //   )
+      // }
     }
   }
 
   render () {
     // console.log(this.props)
-
-    // if (!this.state.loading) {
     if (this.props.cart.loading) {
-      return <Spinner color='#0083a9' style={{height: 400}} />
+      return (
+        <Spinnerd />
+      )
     }
     return (
       <Container style={{flex: 1, flexDirection: 'column', justifyContent: 'space-between'}} onLayout={this.getNewDimensions.bind(this)}>
@@ -217,7 +218,7 @@ class ListScene extends Component {
             </Button>
           </Right>
         </Header>
-          {this.articleList()}
+        {this.articleList()}
         <Footer style={{backgroundColor: 'white', height: this.state.footerButtonHeight + 20, elevation: 0}}>
           <FooterTab style={{backgroundColor: 'black'}}>
             <Button

@@ -17,6 +17,8 @@ import { createStore, applyMiddleware } from 'redux'
 import ReduxThunk from 'redux-thunk'
 import reducers from './reducers'
 
+import Spinnerd from './scenes/loaders/Spinnerd'
+
 export default class AppContainer extends Component {
   constructor (props) {
     // console.log(Dimensions.get('window').height / 7)
@@ -36,10 +38,12 @@ export default class AppContainer extends Component {
       // console.log(typeof obj)
       const products = []
       for (let key in obj) {
-        products.push({
-          code: key,
-          value: obj[key]
-        })
+        if (obj[key]) {
+          products.push({
+            code: key,
+            value: obj[key]
+          })
+        }
       }
       // console.log(obj)
       this.setState({
@@ -51,7 +55,8 @@ export default class AppContainer extends Component {
   render () {
     if (!this.state.loading) {
     // if (this.props.cartList.loading) {
-      return <Spinner color='#0083a9' style={{height: 400}} />
+      // return <Spinner color='#0083a9' style={{height: 400}} />
+      return <Spinnerd />
     }
     const cart = {
       list: this.state.products,
@@ -63,18 +68,25 @@ export default class AppContainer extends Component {
       isConnected: false
     }
 
+    // <Scene key='root' direction='horizontal'>
+    //   <Scene key='welcomeScene' animation='fade' component={WelcomeScene} title='Welcome Scene' hideNavBar />
+    //   <Scene key='loginScene' animation='fade' component={LoginScene} title='Login Scene' hideNavBar />
+    //   <Scene key='listScene' animation='fade' type={ActionConst.REPLACE} component={ListScene} title='List Scene' hideNavBar />
+    //   <Scene key='scanScene' animation='fade' component={ScanScene} title='Scan Scene' hideNavBar />
+    //   <Scene key='homeScene' animation='fade' component={HomeScene} title='Home Scene' hideNavBar />
+    //   <Scene key='cartScene' animation='fade' component={CartScene} title='Cart Scene' hideNavBar />
+    // </Scene>
+
     return (
       <Root>
         <Provider store={createStore(reducers, {conn}, applyMiddleware(ReduxThunk))}>
           <Router>
-            <Scene key='root' direction='horizontal'>
-              <Scene key='welcomeScene' animation='fade' component={WelcomeScene} title='Welcome Scene' hideNavBar />
-              <Scene key='loginScene' animation='fade' component={LoginScene} title='Login Scene' hideNavBar />
-              <Scene key='listScene' animation='fade' type={ActionConst.REPLACE} component={ListScene} title='List Scene' hideNavBar />
-              <Scene key='scanScene' animation='fade' component={ScanScene} title='Scan Scene' hideNavBar />
-              <Scene key='homeScene' animation='fade' component={HomeScene} title='Home Scene' hideNavBar />
-              <Scene key='cartScene' animation='fade' component={CartScene} title='Cart Scene' hideNavBar />
-            </Scene>
+            <Scene key='welcomeScene' animation='fade' component={WelcomeScene} title='Welcome Scene' hideNavBar />
+            <Scene key='loginScene' animation='fade' component={LoginScene} title='Login Scene' hideNavBar />
+            <Scene key='listScene' animation='fade' type={ActionConst.REPLACE} component={ListScene} title='List Scene' hideNavBar />
+            <Scene key='scanScene' animation='fade' component={ScanScene} title='Scan Scene' hideNavBar />
+            <Scene key='homeScene' animation='fade' component={HomeScene} title='Home Scene' hideNavBar />
+            <Scene key='cartScene' animation='fade' component={CartScene} title='Cart Scene' hideNavBar />
           </Router>
         </Provider>
       </Root>

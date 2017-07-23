@@ -1,5 +1,6 @@
 import { AsyncStorage } from 'react-native'
 import { Actions } from 'react-native-router-flux'
+import { URI } from './configuration'
 import {
   LOGIN_USER,
   LOGIN_USER_SUCCESS,
@@ -30,12 +31,11 @@ export const loginUser = (email, password) => {
   return (dispatch) => {
     dispatch({type: LOGIN_USER})
     let pass = changeURIEncode(password)
-    let url = `http://anzornz.kodait.com/anzor_services/login?name=${email}&pass=${pass}`
-    // let url = `http://anzorbeta.dev.kodait.com/anzor_services/login?name=${email}&pass=${pass}`
+    let url = `${URI}login?name=${email}&pass=${pass}`
+    console.log(url)
     fetch(url)
     .then((response) => response.json())
     .then((responseJson) => {
-      console.log('RJ', responseJson)
       if (responseJson) {
         console.log('RJ23', responseJson)
         loginUserSuccess(dispatch, responseJson[0].pass, responseJson[0].uid, email, pass)
@@ -43,7 +43,11 @@ export const loginUser = (email, password) => {
         loginUserFail(dispatch)
       }
     })
-    .catch(() => console.log('Fail communication with server'))
+    .catch((error) => {
+      console.log('Fail communication with server: ', error)
+      loginUserFail(dispatch)
+    })
+    // loginUserSuccess(dispatch, '$S$DYKn6ASvijMjn0nBIjMLAz5zR11xpNxbZfSIrt3FGnwUj8xn0Crp', '7067', email, pass)
   }
 }
 
@@ -61,8 +65,9 @@ export const checkIfLoggedOn = (scene, dispatch) => {
             email = email.substr(0, email.length - 1)
             pass = pass.substr(1)
             pass = pass.substr(0, pass.length - 1)
-            let url = `http://anzornz.kodait.com/anzor_services/login?name=${email}&pass=${pass}`
+            // let url = `http://anzorapp.stage.kodait.com/anzor_services/login?name=${email}&pass=${pass}`
             // console.log(url)
+            let url = `${URI}login?name=${email}&pass=${pass}`
             fetch(url)
             .then((response) => response.json())
             .then((responseJson) => {
@@ -73,22 +78,24 @@ export const checkIfLoggedOn = (scene, dispatch) => {
                 loggedOnFail(dispatch)
               }
             })
+            // loggedOnSuccess(dispatch, user, '7067', email, pass, scene)
           })
         })
       } else {
         loggedOnFail(dispatch)
       }
     })
+    // loggedOnSuccess(dispatch, user, 7067, email, pass, scene)
   }
 }
 
 export const logOut = () => {
   return (dispatch) => {
     dispatch({type: LOG_OUT})
-    AsyncStorage.removeItem('user')
-    AsyncStorage.removeItem('email')
-    AsyncStorage.removeItem('pass')
-    // AsyncStorage.clear()
+    // AsyncStorage.removeItem('user')
+    // AsyncStorage.removeItem('email')
+    // AsyncStorage.removeItem('pass')
+    AsyncStorage.clear()
     Actions.loginScene()
   }
 }

@@ -38,7 +38,7 @@ export default (state = INITIAL_STATE, action) => {
     case CART_LIST_FAIL:
       return { ...state, list: action.payload, loading: false, error: '', totalOrder: 0 }
     case CLEAR_LIST:
-      return { ...state, list: action.payload, loading: false, totalOrder: action.totalOrder }
+      return { ...state, list: action.payload, loading: false, totalOrder: action.totalOrder, message: '', arrow: '' }
     case DELETE_PRODUCT:
       return { ...state, loading: true }
     case DELETE_PRODUCT_SUCCESS:

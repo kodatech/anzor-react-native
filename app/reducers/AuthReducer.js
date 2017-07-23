@@ -13,6 +13,8 @@ import {
 } from '../actions/types'
 
 const INITIAL_STATE = {
+  // email: 'pania.pene@gatewayglass.co.nz',
+  // password: '123456',
   email: '',
   password: '',
   loading: false,
@@ -22,7 +24,7 @@ const INITIAL_STATE = {
 }
 
 export default (state = INITIAL_STATE, action) => {
-  // console.log(action)
+  console.log(action)
   switch (action.type) {
     case EMAIL_CHANGED:
       return { ...state, email: action.payload, error: '' }

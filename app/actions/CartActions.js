@@ -1,6 +1,6 @@
 import { AsyncStorage } from 'react-native'
 import { Actions } from 'react-native-router-flux'
-
+import { URI } from './configuration'
 import {
   QTY_CHANGED,
   QTY_CHANGED_FAIL,
@@ -30,70 +30,6 @@ export const clearList = () => {
   })
 }
 
-// export const qtyChanged = (text, id) => {
-//   return async (dispatch, getState) => {
-//     // console.log('text', text)
-//
-//     if (text.trim() === '') {
-//       return ({
-//         type: QTY_CHANGED_FAIL,
-//         payload: 0
-//       })
-//     }
-//     AsyncStorage.getItem('orders')
-//     .then(storedList => {
-//       let value = id.toString(), order = {
-//           [value]: parseInt(text)
-//         }
-//       AsyncStorage.mergeItem('orders', JSON.stringify(order))
-//       .then(() => {
-//         AsyncStorage.getItem('orders')
-//         .then(newList => {
-//           let obj = JSON.parse(newList)
-//           if (obj === null) {
-//             dispatch({
-//               type: CART_LIST_FAIL,
-//               payload: []
-//             })
-//           }
-//           // console.log(obj)
-//           // const products = []
-//           // console.log(obj)
-//           state = getState()
-//           let products = state.cart.list
-//           // console.log(products)
-//           for (let i = 0; i < products.length; i++) {
-//             if (products[i].code === id) {
-//               console.log(id)
-//               console.log(products[i].code)
-//               products[i].value = parseFloat(text)
-//               products[i].total = parseFloat(text * products[i].price).toFixed(3)
-//               products.sort(function (a, b) {
-//                 if (a.description > b.description) {
-//                   return 1
-//                 }
-//                 if (a.description < b.description) {
-//                   return -1
-//                 }
-//                 // a must be equal to b
-//                 return 0
-//               })
-//               console.log(products)
-//               dispatch({
-//                 type: QTY_CHANGED,
-//                 payload: text,
-//                 list: products,
-//                 loading: true,
-//                 totalOrder: 0
-//               })
-//             }
-//           }
-//         })
-//       })
-//     })
-//   }
-// }
-
 export const qtyChanged = (text, id) => {
   return async (dispatch, getState) => {
     let state = getState()
@@ -105,8 +41,12 @@ export const qtyChanged = (text, id) => {
       })
     }
     AsyncStorage.getItem('orders').then(storedList => {
+      let obj = JSON.parse(storedList)
+      // console.log(obj[id])
       let value = id.toString(), order = {
-          [value]: parseInt(text)
+          // [value]: parseInt(text)
+          [value]: {'quantity': parseInt(text),
+            'totalline': parseFloat(parseFloat((obj[id].totalline) / parseInt(obj[id].quantity)) * parseInt(text)).toFixed(3)}
         }
       AsyncStorage.mergeItem('orders', JSON.stringify(order))
       .then(() => {
@@ -123,50 +63,62 @@ export const qtyChanged = (text, id) => {
           // console.log(obj)
           let totalOrder = 0
           for (let key in obj) {
-            let url = `http://anzornz.kodait.com/anzor_services/product?barCode=${key}&uid=${state.auth.uid}`
-            fetch(url)
-              .then((response) => response.json())
-              .then((responseJson) => {
-                if (typeof (responseJson) === 'object') {
-                  products.push({
-                    description: responseJson[0].description,
-                    stockcode: responseJson[0].stockcode,
-                    price: parseFloat(responseJson[0].sell_price_1).toFixed(3),
-                    code: key,
-                    value: obj[key],
-                    total: parseFloat(obj[key] * responseJson[0].sell_price_1).toFixed(3)
-                  })
-                  totalOrder = parseFloat(parseFloat(totalOrder) + parseFloat(obj[key] * responseJson[0].sell_price_1)).toFixed(3)
-                  // console.log(products)
-                  if (Object.keys(obj).length === products.length) {
-                    products.sort(function (a, b) {
-                      if (a.description > b.description) {
-                        return 1
-                      }
-                      if (a.description < b.description) {
-                        return -1
-                      }
-                      // a must be equal to b
-                      return 0
+            if (obj[key]) {
+              let url = `${URI}product?barCode=${key}&uid=${state.auth.uid}`
+              fetch(url)
+                .then((response) => response.json())
+                .then((responseJson) => {
+                  if (typeof (responseJson) === 'object') {
+                    products.push({
+                      description: responseJson[0].description,
+                      stockcode: responseJson[0].stockcode,
+                      price: parseFloat(responseJson[0].sell_price_1).toFixed(3),
+                      code: key,
+                      value: obj[key].quantity,
+                      // total: parseFloat(obj[key] * responseJson[0].sell_price_1).toFixed(3)
+                      total: obj[key].totalline
                     })
-                    dispatch({
-                      type: QTY_CHANGED,
-                      payload: text,
-                      list: products,
-                      loading: true,
-                      totalOrder: totalOrder
-                    })
+                    totalOrder = parseFloat(parseFloat(totalOrder) + parseFloat(obj[key].totalline)).toFixed(3)
+                    // products.push({
+                    //   description: responseJson[0].description,
+                    //   stockcode: responseJson[0].stockcode,
+                    //   price: parseFloat(responseJson[0].sell_price_1).toFixed(3),
+                    //   code: key,
+                    //   value: obj[key],
+                    //   total: parseFloat(obj[key] * responseJson[0].sell_price_1).toFixed(3)
+                    // })
+                    // totalOrder = parseFloat(parseFloat(totalOrder) + parseFloat(obj[key] * responseJson[0].sell_price_1)).toFixed(3)
+                    // console.log(products)
+                    if (Object.keys(obj).length === products.length) {
+                      products.sort(function (a, b) {
+                        if (a.description > b.description) {
+                          return 1
+                        }
+                        if (a.description < b.description) {
+                          return -1
+                        }
+                        // a must be equal to b
+                        return 0
+                      })
+                      dispatch({
+                        type: QTY_CHANGED,
+                        payload: text,
+                        list: products,
+                        loading: true,
+                        totalOrder: totalOrder
+                      })
+                    }
+                  } else {
+                    console.log('1', key)
+                    delete obj[key]
                   }
-                } else {
-                  console.log('1', key)
+                })
+                .catch((error) => {
+                  console.log('2', error)
                   delete obj[key]
-                }
-              })
-              .catch((error) => {
-                console.log('2', key)
-                delete obj[key]
-                // console.error(error + ' IN FETCH CATCH QTY_CHANGED')
-              })
+                  // console.error(error + ' IN FETCH CATCH QTY_CHANGED')
+                })
+            }
           }
         })
       })
@@ -180,6 +132,7 @@ export const getCartList = () => {
   return async (dispatch, getState) => {
     let state = getState()
     AsyncStorage.getItem('orders').then(async (storedList) => {
+      // getProductsForStorage(dispatch, storedList, state)
       let obj = JSON.parse(storedList)
       if (obj === null) {
         dispatch({
@@ -189,53 +142,62 @@ export const getCartList = () => {
       }
       const products = []
       let totalOrder = 0
+
       for (let key in obj) {
-        let url = `http://anzornz.kodait.com/anzor_services/product?barCode=${key}&uid=${state.auth.uid}`
-        // let url = `http://anzorbeta.dev.kodait.com/anzor_services/product?barCode=${key}&uid=1`
-        fetch(url)
-          .then((response) => response.json())
-          .then((responseJson) => {
-            if (typeof (responseJson) === 'object') {
-              // console.log('RS', responseJson)
-              products.push({
-                description: responseJson[0].description,
-                stockcode: responseJson[0].stockcode,
-                price: parseFloat(responseJson[0].sell_price_1).toFixed(3),
-                code: key,
-                value: obj[key],
-                total: parseFloat(obj[key] * responseJson[0].sell_price_1).toFixed(3)
-              })
-              totalOrder = parseFloat(parseFloat(totalOrder) + parseFloat(obj[key] * responseJson[0].sell_price_1)).toFixed(3)
-              if (Object.keys(obj).length === products.length) {
-                products.sort(function (a, b) {
-                  if (a.description > b.description) {
-                    return 1
-                  }
-                  if (a.description < b.description) {
-                    return -1
-                  }
-                  // a must be equal to b
-                  return 0
+        if (obj[key]) {
+          // let url = `${URI}product?barCode=${key}&uid=${state.auth.uid}`
+          // fetch(url)
+          //   .then((response) => response.json())
+          //   .then((responseJson) => {
+              // if (typeof (responseJson) === 'object') {
+              //   console.log('RS', responseJson)
+                products.push({
+                  description: obj[key].description,
+                  stockcode: obj[key].stockcode,
+                  price: parseFloat(obj[key].price).toFixed(3),
+                  code: key,
+                  value: obj[key].quantity,
+                  // total: parseFloat(obj[key] * responseJson[0].sell_price_1).toFixed(3)
+                  total: obj[key].totalline
                 })
-                dispatch({
-                  type: CART_LIST_SUCCESS,
-                  payload: products,
-                  totalOrder: totalOrder,
-                  loading: true
-                })
-              }
-            } else {
-              console.log('1', key)
-              delete obj[key]
-            }
-          })
-          .catch((error) => {
-            // console.error(' IN FETCH CATCH CART_LIST_SUCCESS', error)
-            console.log('2', key)
-            delete obj[key]
-          })
+                totalOrder = parseFloat(parseFloat(totalOrder) + parseFloat(obj[key].totalline)).toFixed(3)
+                if (Object.keys(obj).length === products.length) {
+                  console.log(obj)
+                  products.sort(function (a, b) {
+                    if (a.description > b.description) {
+                      return 1
+                    }
+                    if (a.description < b.description) {
+                      return -1
+                    }
+                    // a must be equal to b
+                    return 0
+                  })
+                  dispatch({
+                    type: CART_LIST_SUCCESS,
+                    payload: products,
+                    totalOrder: totalOrder,
+                    loading: true
+                  })
+                }
+              // } else {
+              //   console.log('1', key)
+              //   delete obj[key]
+              // }
+            // })
+            // .catch((error) => {
+            //   // console.error(' IN FETCH CATCH CART_LIST_SUCCESS', error)
+            //   console.log('2', error)
+            //   delete obj[key]
+            // })
+        }
       }
+
+
     })
+    // .then(() => {
+    //   console.log('here')
+    // })
   }
 }
 
@@ -260,59 +222,64 @@ export const deleteProduct = (id) => {
           loading: true
         })
       }
-      const products = []
-      let totalOrder = 0
       AsyncStorage.removeItem('orders')
       AsyncStorage.setItem('orders')
+      const products = []
+      let totalOrder = 0
       for (let key in obj) {
-        let url = `http://anzornz.kodait.com/anzor_services/product?barCode=${key}&uid=${state.auth.uid}`
-        fetch(url)
-          .then((response) => response.json())
-          .then((responseJson) => {
-            if (typeof (responseJson) === 'object') {
-              if (id !== key) {
-                let value = key.toString(), order = {
-                    [value]: obj[key]
+        if (obj[key]) {
+          let url = `${URI}product?barCode=${key}&uid=${state.auth.uid}`
+          fetch(url)
+            .then((response) => response.json())
+            .then((responseJson) => {
+              if (typeof (responseJson) === 'object') {
+                if (id !== key) {
+                  let value = key.toString(), order = {
+                      [value]: obj[key]
+                    }
+                  AsyncStorage.mergeItem('orders', JSON.stringify(order))
+                  products.push({
+                    description: responseJson[0].description,
+                    stockcode: responseJson[0].stockcode,
+                    price: parseFloat(responseJson[0].sell_price_1).toFixed(3),
+                    code: key,
+                    value: obj[key].quantity,
+                    // total: parseFloat(obj[key] * responseJson[0].sell_price_1).toFixed(3)
+                    total: obj[key].totalline
+                  })
+                  totalOrder = parseFloat(parseFloat(totalOrder) + parseFloat(obj[key].totalline)).toFixed(3)
+                  if (Object.keys(obj).length === (products.length + 1)) {
+                    products.sort(function (a, b) {
+                      if (a.description > b.description) {
+                        return 1
+                      }
+                      if (a.description < b.description) {
+                        return -1
+                      }
+                      // a must be equal to b
+                      return 0
+                    })
+                    dispatch({
+                      type: DELETE_PRODUCT_SUCCESS,
+                      payload: products,
+                      totalOrder: totalOrder,
+                      loading: true
+                    })
                   }
-                AsyncStorage.mergeItem('orders', JSON.stringify(order))
-                products.push({
-                  description: responseJson[0].description,
-                  stockcode: responseJson[0].stockcode,
-                  price: parseFloat(responseJson[0].sell_price_1).toFixed(3),
-                  code: key,
-                  value: obj[key],
-                  total: parseFloat(obj[key] * responseJson[0].sell_price_1).toFixed(3)
-                })
-                totalOrder = parseFloat(parseFloat(totalOrder) + parseFloat(obj[key] * responseJson[0].sell_price_1)).toFixed(3)
-                if (Object.keys(obj).length === (products.length + 1)) {
-                  products.sort(function (a, b) {
-                    if (a.description > b.description) {
-                      return 1
-                    }
-                    if (a.description < b.description) {
-                      return -1
-                    }
-                    // a must be equal to b
-                    return 0
-                  })
-                  dispatch({
-                    type: DELETE_PRODUCT_SUCCESS,
-                    payload: products,
-                    totalOrder: totalOrder,
-                    loading: true
-                  })
                 }
+              } else {
+                console.log('1', key)
+                delete obj[key]
               }
-            } else {
-              console.log('1', key)
-              delete obj[key]
-            }
-          })
-          .catch((error) => {
-            // console.error(error + ' IN FETCH CATCH CART_LIST_SUCCESS')
-            console.log('2', key)
-            delete obj[key]
-          })
+            })
+            .catch((error) => {
+              // console.error(error + ' IN FETCH CATCH CART_LIST_SUCCESS')
+              if (error) {
+                console.log('2', key)
+                delete obj[key]
+              }
+            })
+        }
       }
     })
   }
@@ -331,7 +298,7 @@ export const checkOut = () => {
             email = email.substr(0, email.length - 1)
             pass = pass.substr(1)
             pass = pass.substr(0, pass.length - 1)
-            let url = `http://anzornz.kodait.com/anzor_services/login?name=${email}&pass=${pass}`
+            let url = `${URI}login?name=${email}&pass=${pass}`
             // console.log(url)
             fetch(url)
             .then((response) => response.json())
@@ -340,8 +307,8 @@ export const checkOut = () => {
               if (responseJson) {
                 let state = getState()
                 let list = state.cart.list
-                let url = 'http://anzornz.kodait.com/anzor_services/checkout?'
-                // let url = 'http://anzorbeta.dev.kodait.com/anzor_services/checkout?'
+                let url = URI + 'checkout?'
+                console.log(list)
                 for (let key in list) {
                   if (key) {
                     // console.log(key)
@@ -355,7 +322,7 @@ export const checkOut = () => {
                 }
                 url += `uid=${state.auth.uid}`
                 // http://anzorbeta.dev.kodait.com/anzor_services/checkout?skuQty[0]=1&skuQty[1]=5&sku[0]=ZBBPFA&sku[1]=CHCL605&uid=1
-                // fetch(`http://anzornz.kodait.com/anzor_services/checkout?skuQty[0]=${skuQty[0]}&sku[0]=${sku[0]}&uid=1`)
+                // fetch(URI + `checkout?skuQty[0]=${skuQty[0]}&sku[0]=${sku[0]}&uid=1`)
                 fetch(url)
                   .then(response => response.json())
                   .then((responseJson) => {
@@ -389,97 +356,186 @@ export const checkOut = () => {
   }
 }
 
+const storeScannedProducts = (barCodeScannedValue, stores, responseJson) => {
+  if (barCodeScannedValue !== false) {
+    // Stored orders exists
+    if (stores != null) {
+      let ordersAux = JSON.parse(stores)
+      // barcode is already stored. Need to add quantity
+      if (ordersAux[barCodeScannedValue] !== undefined) {
+        let value = barCodeScannedValue.toString(), order = {
+            [value]: {'quantity': parseInt(responseJson[0].quantity) + parseInt(ordersAux[barCodeScannedValue].quantity),
+              'totalline': parseFloat(parseFloat(responseJson[0].totalline) + parseFloat(ordersAux[barCodeScannedValue].totalline)).toFixed(3)}
+          }
+        AsyncStorage.mergeItem('orders', JSON.stringify(order))
+      } else {
+        let value = barCodeScannedValue.toString(), order = {
+            [value]: {'quantity': responseJson[0].quantity,
+              'totalline': responseJson[0].totalline,
+              'description': responseJson[0].description,
+              'stockcode': responseJson[0].stockcode,
+              'code': responseJson[0].barcode,
+              'price': responseJson[0].sell_price_1}
+          }
+        AsyncStorage.mergeItem('orders', JSON.stringify(order))
+      }
+    } else {
+      // First product stored in order
+      let value = barCodeScannedValue.toString(), order = {
+          [value]: {'quantity': responseJson[0].quantity,
+            'totalline': responseJson[0].totalline,
+            'description': responseJson[0].description,
+            'stockcode': responseJson[0].stockcode,
+            'code': responseJson[0].barcode,
+            'price': responseJson[0].sell_price_1
+          }
+        }
+      AsyncStorage.setItem('orders', JSON.stringify(order))
+    }
+  } else {
+    console.log('Select a bar code please!')
+  }
+}
+
+const getProductsForStorage = (dispatch, storedList, state) => {
+  // console.log(storedList)
+  let obj = JSON.parse(storedList)
+  if (obj === null) {
+    dispatch({
+      type: CART_LIST_FAIL,
+      payload: []
+    })
+  }
+  const products = []
+  let totalOrder = 0
+  for (let key in obj) {
+    if (obj[key]) {
+      let url = `${URI}product?barCode=${key}&uid=${state.auth.uid}`
+      fetch(url)
+        .then((response) => response.json())
+        .then((responseJson) => {
+          if (typeof (responseJson) === 'object') {
+            console.log('RS', responseJson)
+            products.push({
+              description: responseJson[0].description,
+              stockcode: responseJson[0].stockcode,
+              price: parseFloat(responseJson[0].sell_price_1).toFixed(3),
+              code: key,
+              value: obj[key].quantity,
+              // total: parseFloat(obj[key] * responseJson[0].sell_price_1).toFixed(3)
+              total: obj[key].totalline
+            })
+            totalOrder = parseFloat(parseFloat(totalOrder) + parseFloat(obj[key].totalline)).toFixed(3)
+            if (Object.keys(obj).length === products.length) {
+              products.sort(function (a, b) {
+                if (a.description > b.description) {
+                  return 1
+                }
+                if (a.description < b.description) {
+                  return -1
+                }
+                // a must be equal to b
+                return 0
+              })
+              dispatch({
+                type: STORE_PRODUCT_SUCCESS,
+                payload: products,
+                totalOrder: totalOrder
+              })
+            }
+          } else {
+            console.log('1', key)
+            delete obj[key]
+          }
+        })
+        .catch((error) => {
+          // console.error(' IN FETCH CATCH CART_LIST_SUCCESS', error)
+          if (error) {
+            console.log('2', key)
+            delete obj[key]
+          }
+        })
+    }
+  }
+}
+
 export const addNewProduct = (barCodeScannedValue) => {
   return async (dispatch, getState) => {
     dispatch({type: ADD_NEW_PRODUCT})
     let state = getState()
-    let url = `http://anzornz.kodait.com/anzor_services/product?barCode=${barCodeScannedValue}&uid=${state.auth.uid}`
-    // let url = `http://anzorbeta.dev.kodait.com/anzor_services/product?barCode=${key}&uid=1`
+
+    let url = `${URI}product?barCode=${barCodeScannedValue}&uid=${state.auth.uid}`
+    // console.log(url)
     fetch(url)
       .then((response) => response.json())
       .then((responseJson) => {
+        console.log(responseJson)
         if (typeof (responseJson) === 'object') {
           AsyncStorage.getItem('orders').then(stores => {
-            if (barCodeScannedValue !== false) {
-              if (stores != null) {
-                let ordersAux = JSON.parse(stores)
-                if (ordersAux[barCodeScannedValue] !== undefined) {
-                  let value = barCodeScannedValue.toString(), order = {
-                      [value]: ordersAux[barCodeScannedValue] + 1
-                    }
-                  AsyncStorage.mergeItem('orders', JSON.stringify(order))
-                } else {
-                  let value = barCodeScannedValue.toString(), order = {
-                      [value]: 1
-                    }
-                  AsyncStorage.mergeItem('orders', JSON.stringify(order))
-                }
-              } else {
-                let value = barCodeScannedValue.toString(), order = {
-                    [value]: 1
-                  }
-                AsyncStorage.setItem('orders', JSON.stringify(order))
-              }
-            } else {
-              console.log('Select a bar code please!')
-            }
+            storeScannedProducts(barCodeScannedValue, stores, responseJson)
           })
           .then(() => {
             AsyncStorage.getItem('orders').then(async (storedList) => {
-              let obj = JSON.parse(storedList)
-              if (obj === null) {
-                dispatch({
-                  type: CART_LIST_FAIL,
-                  payload: []
-                })
-              }
-              const products = []
-              let totalOrder = 0
-              for (let key in obj) {
-                let url = `http://anzornz.kodait.com/anzor_services/product?barCode=${key}&uid=${state.auth.uid}`
-                // let url = `http://anzorbeta.dev.kodait.com/anzor_services/product?barCode=${key}&uid=1`
-                fetch(url)
-                  .then((response) => response.json())
-                  .then((responseJson) => {
-                    if (typeof (responseJson) === 'object') {
-                      // console.log('RS', responseJson)
-                      products.push({
-                        description: responseJson[0].description,
-                        stockcode: responseJson[0].stockcode,
-                        price: parseFloat(responseJson[0].sell_price_1).toFixed(3),
-                        code: key,
-                        value: obj[key],
-                        total: parseFloat(obj[key] * responseJson[0].sell_price_1).toFixed(3)
-                      })
-                      totalOrder = parseFloat(parseFloat(totalOrder) + parseFloat(obj[key] * responseJson[0].sell_price_1)).toFixed(3)
-                      if (Object.keys(obj).length === products.length) {
-                        products.sort(function (a, b) {
-                          if (a.description > b.description) {
-                            return 1
-                          }
-                          if (a.description < b.description) {
-                            return -1
-                          }
-                          // a must be equal to b
-                          return 0
-                        })
-                        dispatch({
-                          type: STORE_PRODUCT_SUCCESS,
-                          payload: products,
-                          totalOrder: totalOrder
-                        })
-                      }
-                    } else {
-                      console.log('1', key)
-                      delete obj[key]
-                    }
-                  })
-                  .catch((error) => {
-                    // console.error(' IN FETCH CATCH CART_LIST_SUCCESS', error)
-                    console.log('2', key)
-                    delete obj[key]
-                  })
-              }
+              getProductsForStorage(dispatch, storedList, state)
+              // // console.log(storedList)
+              // let obj = JSON.parse(storedList)
+              // if (obj === null) {
+              //   dispatch({
+              //     type: CART_LIST_FAIL,
+              //     payload: []
+              //   })
+              // }
+              // const products = []
+              // let totalOrder = 0
+              // for (let key in obj) {
+              //   if (obj[key]) {
+              //     let url = `${URI}product?barCode=${key}&uid=${state.auth.uid}`
+              //     fetch(url)
+              //       .then((response) => response.json())
+              //       .then((responseJson) => {
+              //         if (typeof (responseJson) === 'object') {
+              //           console.log('RS', responseJson)
+              //           products.push({
+              //             description: responseJson[0].description,
+              //             stockcode: responseJson[0].stockcode,
+              //             price: parseFloat(responseJson[0].sell_price_1).toFixed(3),
+              //             code: key,
+              //             value: obj[key].quantity,
+              //             // total: parseFloat(obj[key] * responseJson[0].sell_price_1).toFixed(3)
+              //             total: obj[key].totalline
+              //           })
+              //           totalOrder = parseFloat(parseFloat(totalOrder) + parseFloat(obj[key].totalline)).toFixed(3)
+              //           if (Object.keys(obj).length === products.length) {
+              //             products.sort(function (a, b) {
+              //               if (a.description > b.description) {
+              //                 return 1
+              //               }
+              //               if (a.description < b.description) {
+              //                 return -1
+              //               }
+              //               // a must be equal to b
+              //               return 0
+              //             })
+              //             dispatch({
+              //               type: STORE_PRODUCT_SUCCESS,
+              //               payload: products,
+              //               totalOrder: totalOrder
+              //             })
+              //           }
+              //         } else {
+              //           console.log('1', key)
+              //           delete obj[key]
+              //         }
+              //       })
+              //       .catch((error) => {
+              //         // console.error(' IN FETCH CATCH CART_LIST_SUCCESS', error)
+              //         if (error) {
+              //           console.log('2', key)
+              //           delete obj[key]
+              //         }
+              //       })
+              //   }
+              // }
             })
           })
         } else {

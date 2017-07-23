@@ -5,8 +5,6 @@ import {Dimensions, Image, View} from 'react-native'
 import {connect} from 'react-redux'
 import {emailChanged, passwordChanged, loginUser} from '../actions'
 
-
-
 const styles = {
   containerStyle: {
     flex: 1,
@@ -138,9 +136,7 @@ class LoginScene extends Component {
   render () {
     return (
       <Container style={styles.containerStyle}>
-        <View style={{width: this.state.width / 1.2, height: 100, backgroundColor: 'white', marginTop: 10}} >
-          <Text style={{textAlignVertical: 'center', textAlign: 'center'}}>Anzor Logo</Text>
-        </View>
+        <Image source={require('../resources/logo2.png')} />
         <Text style={{marginTop: 10, paddingBottom: 50, color: '#FFFFFF'}}>Product Scanner</Text>
         {this.renderScene()}
       </Container>
@@ -160,7 +156,7 @@ class LoginScene extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log(state)
+  // console.log(state)
   return {
     email: state.auth.email,
     password: state.auth.password,

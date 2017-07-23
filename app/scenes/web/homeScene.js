@@ -3,6 +3,7 @@ import {WebView, Text, View, TouchableOpacity, StyleSheet} from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import {Spinner, Icon} from 'native-base'
 import {connect} from 'react-redux'
+import { ADDRESS } from '../../actions/configuration'
 
 const WEBVIEW_REF = 'WEBVIEW_REF'
 
@@ -45,7 +46,8 @@ class HomeScene extends Component {
         <WebView
           ref={WEBVIEW_REF}
           style={{flex: 1}}
-          source={{uri: 'http://www.anzor.co.nz/'}}
+          source={{uri: ADDRESS}}
+          // source={{uri: 'http://www.anzor.co.nz/'}}
           renderLoading={this.renderLoading}
           // onShouldStartLoadWithRequest={this.openExternalLink}
           onNavigationStateChange={this.onNavigationStateChange.bind(this)}

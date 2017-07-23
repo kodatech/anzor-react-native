@@ -4,10 +4,12 @@ import {Actions} from 'react-native-router-flux'
 import { Spinner, Icon } from 'native-base'
 import {connect} from 'react-redux'
 import {checkIfLoggedOn} from '../../actions'
+import { URI } from '../../actions/configuration'
+console.log(URI)
+import Spinnera from '../loaders/Spinnera'
+
 
 const WEBVIEW_REF = 'WEBVIEW_REF'
-
-// const UID = 1
 
 class CartScene extends Component {
 
@@ -21,7 +23,8 @@ class CartScene extends Component {
   }
 
   renderLoading() {
-    return <Spinner color='#0083a9' style={{height: 400}} />
+    // return <Spinner color='#0083a9' style={{height: 400}} />
+    return <Spinnera />
   }
 
   onNavigationStateChange(navState) {
@@ -52,7 +55,7 @@ class CartScene extends Component {
         <WebView
           ref={WEBVIEW_REF}
           style={{flex: 1}}
-          source={{uri: `http://www.anzor.co.nz/anzor_services/cart?uid=${this.props.auth.uid}`}}
+          source={{uri: `${URI}cart?uid=${this.props.auth.uid}`}}
           renderLoading={this.renderLoading}
           onNavigationStateChange={this.onNavigationStateChange.bind(this)}
           startInLoadingState

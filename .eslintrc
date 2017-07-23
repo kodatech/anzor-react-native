@@ -10,6 +10,9 @@
     }
   },
   "rules": {
+    "one-var": 0,
+    "no-invalid-this": 0,
+    "react/prop-types": 0,
     "comma-dangle": 0,
     "require-jsdoc": 0,
     "react/jsx-no-bind": 0,

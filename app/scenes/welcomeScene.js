@@ -5,6 +5,8 @@ import { checkIfLoggedOn } from '../actions'
 
 import { Input, Spinner } from 'native-base'
 
+import Spinnerb from './loaders/Spinnerd'
+
 class WelcomeScene extends Component {
 
   componentDidMount() {
@@ -21,9 +23,8 @@ class WelcomeScene extends Component {
     //   return <Spinner size='large' />
     // }
     return (
-      <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-        <Image
-          source={require('../resources/logo.png')} />
+      <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', backgroundColor: 'black'}}>
+        <Spinnerb />
       </View>
     )
   }
