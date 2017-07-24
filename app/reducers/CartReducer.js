@@ -3,6 +3,7 @@ import { AsyncStorage } from 'react-native'
 import {
   QTY_CHANGED,
   QTY_CHANGED_FAIL,
+  GET_CART_LIST,
   CART_LIST_SUCCESS,
   CLEAR_LIST,
   CART_LIST_FAIL,
@@ -33,6 +34,8 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, qty: action.payload, list: action.list, loading: false, totalOrder: action.totalOrder, error: '' }
     case QTY_CHANGED_FAIL:
       return state
+    case GET_CART_LIST:
+      return { ...state, loading: true }
     case CART_LIST_SUCCESS:
       return { ...state, list: action.payload, loading: false, totalOrder: action.totalOrder }
     case CART_LIST_FAIL:

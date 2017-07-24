@@ -3,6 +3,8 @@ import {WebView, Text, View, TouchableOpacity, StyleSheet} from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import {Spinner, Icon} from 'native-base'
 import {connect} from 'react-redux'
+
+import Spinnerb from '../loaders/Spinnerb'
 import { ADDRESS } from '../../actions/configuration'
 
 const WEBVIEW_REF = 'WEBVIEW_REF'
@@ -15,7 +17,8 @@ class HomeScene extends Component {
   }
 
   renderLoading() {
-    return <Spinner color='#0083a9' style={{height: 400}} />
+    // return <Spinner color='#0083a9' style={{height: 400}} />
+    return <Spinnerb />
   }
 
   onNavigationStateChange(navState) {

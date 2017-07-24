@@ -4,6 +4,7 @@ import { URI } from './configuration'
 import {
   QTY_CHANGED,
   QTY_CHANGED_FAIL,
+  GET_CART_LIST,
   CART_LIST_SUCCESS,
   CLEAR_LIST,
   CART_LIST_FAIL,
@@ -130,6 +131,7 @@ export const qtyChanged = (text, id) => {
 
 export const getCartList = () => {
   return async (dispatch, getState) => {
+    dispatch({type: GET_CART_LIST})
     let state = getState()
     AsyncStorage.getItem('orders').then(async (storedList) => {
       // getProductsForStorage(dispatch, storedList, state)
@@ -151,53 +153,48 @@ export const getCartList = () => {
           //   .then((responseJson) => {
               // if (typeof (responseJson) === 'object') {
               //   console.log('RS', responseJson)
-                products.push({
-                  description: obj[key].description,
-                  stockcode: obj[key].stockcode,
-                  price: parseFloat(obj[key].price).toFixed(3),
-                  code: key,
-                  value: obj[key].quantity,
-                  // total: parseFloat(obj[key] * responseJson[0].sell_price_1).toFixed(3)
-                  total: obj[key].totalline
-                })
-                totalOrder = parseFloat(parseFloat(totalOrder) + parseFloat(obj[key].totalline)).toFixed(3)
-                if (Object.keys(obj).length === products.length) {
-                  console.log(obj)
-                  products.sort(function (a, b) {
-                    if (a.description > b.description) {
-                      return 1
-                    }
-                    if (a.description < b.description) {
-                      return -1
-                    }
-                    // a must be equal to b
-                    return 0
-                  })
-                  dispatch({
-                    type: CART_LIST_SUCCESS,
-                    payload: products,
-                    totalOrder: totalOrder,
-                    loading: true
-                  })
-                }
-              // } else {
-              //   console.log('1', key)
-              //   delete obj[key]
-              // }
+          products.push({
+            description: obj[key].description,
+            stockcode: obj[key].stockcode,
+            price: parseFloat(obj[key].price).toFixed(3),
+            code: key,
+            value: obj[key].quantity,
+            // total: parseFloat(obj[key] * responseJson[0].sell_price_1).toFixed(3)
+            total: obj[key].totalline
+          })
+          totalOrder = parseFloat(parseFloat(totalOrder) + parseFloat(obj[key].totalline)).toFixed(3)
+          if (Object.keys(obj).length === products.length) {
+            console.log(obj)
+            products.sort(function (a, b) {
+              if (a.description > b.description) {
+                return 1
+              }
+              if (a.description < b.description) {
+                return -1
+              }
+              // a must be equal to b
+              return 0
+            })
+            dispatch({
+              type: CART_LIST_SUCCESS,
+              payload: products,
+              totalOrder: totalOrder,
+              loading: true
+            })
+          }
+        } else {
+          console.log('1', key)
+          delete obj[key]
+        }
             // })
             // .catch((error) => {
             //   // console.error(' IN FETCH CATCH CART_LIST_SUCCESS', error)
             //   console.log('2', error)
             //   delete obj[key]
             // })
-        }
+        // }
       }
-
-
     })
-    // .then(() => {
-    //   console.log('here')
-    // })
   }
 }
 

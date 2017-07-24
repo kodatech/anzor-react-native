@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => {
-  console.log(state)
+  // console.log(state)
   return {
     cart: state.cart,
     conn: state.conn
