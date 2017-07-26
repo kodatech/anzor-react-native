@@ -9,7 +9,7 @@ import { ADDRESS } from '../../actions/configuration'
 
 const WEBVIEW_REF = 'WEBVIEW_REF'
 
-class HomeScene extends Component {
+class SignUpScene extends Component {
 
   constructor(props) {
     super(props)
@@ -31,7 +31,7 @@ class HomeScene extends Component {
   }
 
   onReturn() {
-    Actions.listScene()
+    Actions.loginScene()
   }
 
   render () {
@@ -49,7 +49,7 @@ class HomeScene extends Component {
           ref={WEBVIEW_REF}
           style={{flex: 1}}
           // source={{uri: ADDRESS}}
-          source={{uri: 'http://www.anzor.co.nz/'}}
+          source={{uri: 'http://www.anzor.co.nz/request_web_login'}}
           renderLoading={this.renderLoading}
           // onShouldStartLoadWithRequest={this.openExternalLink}
           onNavigationStateChange={this.onNavigationStateChange.bind(this)}
@@ -71,8 +71,6 @@ class HomeScene extends Component {
         </View>
       </View>
     )
-    // Linking.openURL('http://www.anzor.co.nz/').catch(err => console.error('An error occurred', err))
-    // return
   }
 }
 
@@ -102,4 +100,4 @@ const mapStateToProps = state => {
   return {loading: true}
 }
 
-export default connect(mapStateToProps, {})(HomeScene)
+export default connect(mapStateToProps, {})(SignUpScene)

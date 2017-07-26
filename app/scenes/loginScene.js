@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Container, Content, Form, Item, Input, Label, Button, Text, Spinner } from 'native-base'
 import {Actions} from 'react-native-router-flux'
-import {Dimensions, Image, View} from 'react-native'
+import {Dimensions, Image, View, TouchableWithoutFeedback} from 'react-native'
 import {connect} from 'react-redux'
 import {emailChanged, passwordChanged, loginUser} from '../actions'
 
@@ -35,6 +35,11 @@ class LoginScene extends Component {
 
   onEmailChange (text) {
     this.props.emailChanged(text)
+  }
+
+  goToSignUp () {
+    // console.log('goToSignUp')
+    Actions.signUpScene()
   }
 
   onButtonPress () {
@@ -92,12 +97,20 @@ class LoginScene extends Component {
             <Text style={{flex: 1, justifyContent: 'center', textAlign: 'center'}}> Forgot Password? </Text>
           </Button>
           <Text style={{color: '#FFFFFF', marginTop: 25}}>{this.props.error}</Text>
-          <Text style={{color: '#FFFFFF', marginTop: 25}}>Dont have a login</Text>
-          <Text style={{color: '#FFFFFF'}}>Click here to Sign Up</Text>
+          <TouchableWithoutFeedback onPress={this.goToSignUp.bind(this)}>
+            <View style={{justifyContent: 'center'}}>
+              <Text style={{color: '#FFFFFF', marginTop: 25, textAlign: 'center'}}>Don't have a login?</Text>
+              <Text style={{color: '#FFFFFF', textAlign: 'center'}}>Click here to Sign Up</Text>
+            </View>
+          </TouchableWithoutFeedback>
         </Form>
       </View>
     )
   }
+
+  // <View onPress={this.goToSignUp.bind(this)}>
+  // </View>
+
 
   // renderScene () {
   //   if (this.state.loading) {

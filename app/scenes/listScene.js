@@ -27,13 +27,14 @@ class ListScene extends Component {
       headerButtonWidth: Dimensions.get('window').width / 2.3,
       footerButtonHeight: Dimensions.get('window').height / 7,
       widthDescription: Dimensions.get('window').width / 1.3,
+      stringHeight: Dimensions.get('window').height / 25,
+      arrowHeight: Dimensions.get('window').height / 8,
       showModal: false
     }
   }
 
   async componentWillMount () {
     this.props.checkIfLoggedOn('listScene')
-    // this.props.cart.loading = true
     this.props.getCartList()
     let address = ADDRESS
     fetch(address, { method: 'HEAD' })
@@ -45,9 +46,14 @@ class ListScene extends Component {
       })
   }
 
-  async componentDidMount() {
+  componentDidMount() {
+    // fontSize arrow 100 fontSize string 30
+    // console.log(Dimensions.get('window').height / 8)
+    // console.log(Dimensions.get('window').height / 25)
+    // console.log(this.props)
+    // console.log('acaa', this.props.upToCart)
     const dispatchConnected = isConnected => {
-      console.log(isConnected)
+      // console.log(isConnected)
       let address = ADDRESS
       fetch(address, { method: 'HEAD' })
         .then(() => {
@@ -94,7 +100,9 @@ class ListScene extends Component {
       headerButtonHeight: Dimensions.get('window').height / 4.4,
       headerButtonWidth: Dimensions.get('window').width / 2.3,
       footerButtonHeight: Dimensions.get('window').height / 7,
-      widthDescription: Dimensions.get('window').width / 1.3
+      widthDescription: Dimensions.get('window').width / 1.3,
+      stringHeight: Dimensions.get('window').height / 25,
+      arrowHeight: Dimensions.get('window').height / 8
     })
     // console.log(this.state.widthDescription)
   }
@@ -108,12 +116,7 @@ class ListScene extends Component {
         </Content>
       )
     }
-    // if (this.props.cart.loading) {
-    //   return (
-    //     <Spinner color='#0083a9' style={{height: 400}} />
-    //   )
-    // }
-    if (this.props.conn.isConnected) {
+    if (this.props.conn.isConnected && !this.props.cart.loading) {
       // console.log(this.props.cart.loading)
       // if(!this.props.cart.loading) {
       return (
@@ -136,9 +139,9 @@ class ListScene extends Component {
                     })}><Text style={{fontWeight: 'bold'}}>X</Text></TouchableWithoutFeedback>
                   </View>
                   <Text note>{item.stockcode}</Text>
-                  <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-start', alignContent: 'flex-start'}}>
-                    <Text style={{textAlignVertical: 'center', width: 30}}>Qty</Text>
-                    <View style={{width: 40, marginLeft: 1}}>
+                  <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignContent: 'flex-start'}}>
+                    <Text style={{textAlignVertical: 'center', width: 25}}>Qty</Text>
+                    <View style={{width: 60, marginLeft: 0, paddingLeft: 0}}>
                       <Input name={item.code} defaultValue={item.value.toString()}
                         // onEndEditing={
                         onChange={
@@ -152,17 +155,17 @@ class ListScene extends Component {
                         keyboardType='numeric' editable />
                     </View>
                     <Text style={{textAlignVertical: 'center', width: 10, marginLeft: 1}}>x</Text>
-                    <Text style={{textAlignVertical: 'center', width: 10}}>$</Text>
-                    <Text style={{textAlignVertical: 'center', width: 60, marginLeft: 1, marginRight: 10}}>{item.price}</Text>
-                    <Text style={{textAlignVertical: 'center', width: 10}}>=</Text>
-                    <Text style={{textAlignVertical: 'center'}}>{item.total}</Text>
+                    <Text style={{textAlignVertical: 'center', width: 10, paddingLeft: 1, marginLeft: 1}}>$</Text>
+                    <Text style={{textAlignVertical: 'center', width: 60, marginLeft: 1, marginRight: 5}}>{item.price}</Text>
+                    <Text style={{textAlignVertical: 'center', width: 10, paddingLeft: 1, marginLeft: 1}}>=</Text>
+                    <Text style={{textAlignVertical: 'center', marginLeft: 1}}>{item.total}</Text>
                   </View>
                 </Body>
               </ListItem>
           } />
           <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center'}}>
-            <Text style={{color: 'green', fontSize: 30, textAlign: 'center'}}>{this.props.cart.message}</Text>
-            <Text style={{color: 'green', fontSize: 100, textAlign: 'center'}}>{this.props.cart.arrow}</Text>
+            <Text style={{color: 'green', fontSize: this.state.stringHeight, textAlign: 'center'}}>{this.props.cart.message}</Text>
+            <Text style={{color: 'green', fontSize: this.state.arrowHeight, textAlign: 'center'}}>{this.props.cart.arrow}</Text>
           </View>
           <ListItem style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <View style={{flexDirection: 'row', justifyContent: 'center', paddingLeft: 12}}>
@@ -182,12 +185,6 @@ class ListScene extends Component {
           </ConfirmModalScene>
         </Content>
       )
-      // }
-      // else {
-      //   return (
-      //     <Spinner color='#0083a9' style={{height: 400}} />
-      //   )
-      // }
     }
   }
 
@@ -225,14 +222,14 @@ class ListScene extends Component {
               onPress={
                 this.onCheckOut.bind(this)
               }
-              disabled={!this.props.conn.isConnected}
+              disabled={!this.props.conn.isConnected || !this.props.upToCart || this.props.cart.loading}
               style={{backgroundColor: '#0083a9', height: this.state.footerButtonHeight, marginLeft: 10, marginRight: 5}}>
               <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
                 <Icon style={{fontSize: 35}} color='white' name='ios-cloud-upload-outline' />
                 <Text style={{textAlign: 'center', color: 'white'}}>Upload to Cart</Text>
               </View>
             </Button>
-            <Button onPress={Actions.cartScene} disabled={!this.props.conn.isConnected} style={{backgroundColor: '#0083a9', marginLeft: 5, height: this.state.footerButtonHeight, marginRight: 5}}>
+            <Button onPress={Actions.cartScene} disabled={!this.props.conn.isConnected || this.props.cart.loading} style={{backgroundColor: '#0083a9', marginLeft: 5, height: this.state.footerButtonHeight, marginRight: 5}}>
               <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
                 <Icon style={{fontSize: 35}} color='white' name='ios-cart-outline' />
                 <Text style={{textAlign: 'center', color: 'white'}}>View Cart</Text>
@@ -292,10 +289,11 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => {
-  // console.log(state)
+  console.log(state)
   return {
     cart: state.cart,
-    conn: state.conn
+    conn: state.conn,
+    upToCart: state.cart.upToCart
   }
 }
 

@@ -1,7 +1,7 @@
 import { AsyncStorage } from 'react-native'
 
 import {
-  QTY_CHANGED,
+  QTY_CHANGED_SUCCESS,
   QTY_CHANGED_FAIL,
   GET_CART_LIST,
   CART_LIST_SUCCESS,
@@ -24,28 +24,29 @@ const INITIAL_STATE = {
   qty: '',
   loading: true,
   totalOrder: 0,
-  error: ''
+  error: '',
+  upToCart: false
 }
 
 export default (state = INITIAL_STATE, action) => {
   // console.log(action)
   switch (action.type) {
-    case QTY_CHANGED:
+    case QTY_CHANGED_SUCCESS:
       return { ...state, qty: action.payload, list: action.list, loading: false, totalOrder: action.totalOrder, error: '' }
     case QTY_CHANGED_FAIL:
       return state
     case GET_CART_LIST:
-      return { ...state, loading: true }
+      return { ...state, loading: true, error: '' }
     case CART_LIST_SUCCESS:
-      return { ...state, list: action.payload, loading: false, totalOrder: action.totalOrder }
+      return { ...state, list: action.payload, loading: action.loading, totalOrder: action.totalOrder, upToCart: action.upToCart }
     case CART_LIST_FAIL:
-      return { ...state, list: action.payload, loading: false, error: '', totalOrder: 0 }
+      return { ...state, list: action.payload, loading: false, error: '', totalOrder: 0, upToCart: action.upToCart }
     case CLEAR_LIST:
-      return { ...state, list: action.payload, loading: false, totalOrder: action.totalOrder, message: '', arrow: '' }
+      return { ...state, list: action.payload, loading: false, totalOrder: action.totalOrder, message: '', arrow: '', upToCart: false }
     case DELETE_PRODUCT:
       return { ...state, loading: true }
     case DELETE_PRODUCT_SUCCESS:
-      return { ...state, list: action.payload, loading: false, totalOrder: action.totalOrder, error: '' }
+      return { ...state, list: action.payload, loading: false, totalOrder: action.totalOrder, error: '', upToCart: action.upToCart }
     case DELETE_PRODUCT_FAIL:
       return { ...state, list: action.payload, loading: false, error: '' }
     case CHECK_OUT:
@@ -62,9 +63,9 @@ export default (state = INITIAL_STATE, action) => {
     case ADD_NEW_PRODUCT:
       return { ...state, loading: true }
     case STORE_PRODUCT_SUCCESS:
-      return { ...state, list: action.payload, loading: false, totalOrder: action.totalOrder, error: '', message: '', arrow: '' }
+      return { ...state, list: action.payload, loading: false, totalOrder: action.totalOrder, error: '', message: '', arrow: '', upToCart: action.upToCart }
     case STORE_PRODUCT_FAIL:
-      return { ...state, error: 'This is not a valid product' }
+      return { ...state, error: 'This is not a valid product', loading: false }
     case CART_NO_CONNECTED:
       return { isConnected: action.payload }
     default:

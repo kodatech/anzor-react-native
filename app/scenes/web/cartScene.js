@@ -5,7 +5,7 @@ import { Spinner, Icon } from 'native-base'
 import {connect} from 'react-redux'
 import {checkIfLoggedOn} from '../../actions'
 import { URI } from '../../actions/configuration'
-console.log(URI)
+// console.log(URI)
 import Spinnera from '../loaders/Spinnera'
 
 
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => {
-  console.log(state)
+  // console.log(state)
   return {
     auth: state.auth,
     loading: true
