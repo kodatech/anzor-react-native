@@ -32,13 +32,13 @@ export default (state = INITIAL_STATE, action) => {
   // console.log(action)
   switch (action.type) {
     case QTY_CHANGED_SUCCESS:
-      return { ...state, qty: action.payload, list: action.list, loading: false, totalOrder: action.totalOrder, error: '' }
+      return { ...state, qty: action.payload, error: '' }
     case QTY_CHANGED_FAIL:
       return state
     case GET_CART_LIST:
       return { ...state, loading: true, error: '' }
     case CART_LIST_SUCCESS:
-      return { ...state, list: action.payload, loading: action.loading, totalOrder: action.totalOrder, upToCart: action.upToCart }
+      return { ...state, list: action.payload, loading: action.loading, totalOrder: action.totalOrder, error: '', message: '', arrow: '', upToCart: action.upToCart }
     case CART_LIST_FAIL:
       return { ...state, list: action.payload, loading: false, error: '', totalOrder: 0, upToCart: action.upToCart }
     case CLEAR_LIST:
