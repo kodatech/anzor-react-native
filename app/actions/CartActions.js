@@ -289,8 +289,10 @@ export const checkOut = () => {
             .then((responseJson) => {
               // console.log('RJ 2', responseJson)
               if (responseJson) {
+                // console.log(responseJson)
                 let state = getState()
                 let list = state.cart.list
+                // console.log(list)
                 let url = URI + 'checkout?'
                 // console.log(list)
                 for (let key in list) {
@@ -305,13 +307,15 @@ export const checkOut = () => {
                   }
                 }
                 url += `uid=${state.auth.uid}`
+                // console.log(url)
+                // http://anzorapp.stage.kodait.com/anzor_services/checkout?skuQty[0]=5&sku[0]=WUI12SX&skuQty[1]=3&sku[1]=WFI4103216&skuQty[2]=1&sku[2]=RVTAS4-10&skuQty[3]=1000&sku[3]=RVTAS4-03B&skuQty[4]=1&sku[4]=RVTSTST4-03&skuQty[5]=1&sku[5]=WCG408&skuQty[6]=1&sku[6]=WCGB408&skuQty[7]=1&sku[7]=EFSSDHWFGG08012&skuQty[8]=1&sku[8]=NTHM410&skuQty[9]=2&sku[9]=SDM416&skuQty[10]=1&sku[10]=RCIM028&skuQty[11]=1&sku[11]=WTIM404&skuQty[12]=2&sku[12]=SMCKM404012H&skuQty[13]=1&sku[13]=SMPM404012H&skuQty[14]=1&sku[14]=WFM4041210&skuQty[15]=1&sku[15]=SSHBM404016&skuQty[16]=1&sku[16]=SMCKM404020H&skuQty[17]=1&sku[17]=SMPM404020H&skuQty[18]=1&sku[18]=SMPM404025Z&skuQty[19]=1&sku[19]=SMCKM404040H&skuQty[20]=1&sku[20]=SMPM404006H&skuQty[21]=2&sku[21]=WFM4040909&skuQty[22]=1&sku[22]=SMCKM405012H&skuQty[23]=1&sku[23]=SSHBM405016&skuQty[24]=1&sku[24]=SSHCM405016&skuQty[25]=1&sku[25]=SMPM405016H&skuQty[26]=1&sku[26]=SMCKM405020H&skuQty[27]=2&sku[27]=WTEM406&skuQty[28]=1&sku[28]=NTHM406&skuQty[29]=1&sku[29]=NTBPM406K&skuQty[30]=1&sku[30]=SSHBM406012&skuQty[31]=1&sku[31]=WFM4061216&skuQty[32]=1&sku[32]=SSHBM406016&skuQty[33]=1&sku[33]=SSHCKM406020&skuQty[34]=2&sku[34]=SSHCKM406025&skuQty[35]=2&sku[35]=SSHBM406030&skuQty[36]=1&sku[36]=SSHCKM406035&skuQty[37]=2&sku[37]=BJCM406035&skuQty[38]=1&sku[38]=SSHBM606035&skuQty[39]=1&sku[39]=SSHCKM406060&skuQty[40]=1&sku[40]=SSHCKM606070&skuQty[41]=1&sku[41]=SSHCKM606090&skuQty[42]=2&sku[42]=NSSHRM08&skuQty[43]=1&sku[43]=NTHM408&skuQty[44]=1&sku[44]=SSHBM408012&skuQty[45]=1&sku[45]=WFM4081612&skuQty[46]=3&sku[46]=SSHBM408020&skuQty[47]=50&sku[47]=SSHBM408040&skuQty[48]=1&sku[48]=SSHBM408060&skuQty[49]=1&sku[49]=BHM408070&uid=7067
                 // http://anzorbeta.dev.kodait.com/anzor_services/checkout?skuQty[0]=1&skuQty[1]=5&sku[0]=ZBBPFA&sku[1]=CHCL605&uid=1
                 // fetch(URI + `checkout?skuQty[0]=${skuQty[0]}&sku[0]=${sku[0]}&uid=1`)
                 fetch(url)
                   .then(response => response.json())
                   .then((responseJson) => {
                     if (responseJson) {
-                      // console.log(responseJson)
+                      console.log(responseJson)
                       AsyncStorage.removeItem('orders')
                       dispatch({
                         type: CHECK_OUT_SUCCESS,
@@ -323,7 +327,8 @@ export const checkOut = () => {
                   .catch((error) => {
                     console.log('error', error)
                     dispatch({
-                      type: CHECK_OUT_FAIL
+                      type: CHECK_OUT_FAIL,
+                      error: error
                     })
                   })
               } else {
@@ -389,6 +394,31 @@ const getProductsFromStorage = (dispatch, storedList, state) => {
       payload: []
     })
   }
+
+  // let totalOrder = 0
+  // const list = _.map(storedList, (val, uid) => {
+  //   totalOrder = parseFloat(parseFloat(totalOrder) + parseFloat(val.totalline)).toFixed(2)
+  //   return {...val, uid}
+  // })
+  // list.sort(function(a, b) {
+  //   if (a.stockcode > b.stockcode) {
+  //     return 1
+  //   }
+  //   if (a.stockcode < b.stockcode) {
+  //     return -1
+  //   }
+  //     // a must be equal to b
+  //   return 0
+  // })
+  //
+  // dispatch({
+  //   type: CART_LIST_SUCCESS,
+  //   payload: products,
+  //   totalOrder: totalOrder,
+  //   loading: false,
+  //   upToCart: true
+  // })
+
   const products = []
   let totalOrder = 0
   for (let key in obj) {

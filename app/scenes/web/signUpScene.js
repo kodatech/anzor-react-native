@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {WebView, Text, View, TouchableOpacity, StyleSheet} from 'react-native'
+import {WebView, Text, View, TouchableOpacity, StyleSheet, TouchableWithoutFeedback} from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import {Spinner, Icon} from 'native-base'
 import {connect} from 'react-redux'

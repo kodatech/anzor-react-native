@@ -59,7 +59,7 @@ export default (state = INITIAL_STATE, action) => {
         message: 'Great! Your products have been uploaded to your cart, press here to view ',
         arrow: '↓'}
     case CHECK_OUT_FAIL:
-      return state
+      return { ...state, loading: false, error: 'Check out fail!' }
     case ADD_NEW_PRODUCT:
       return { ...state, loading: true }
     case STORE_PRODUCT_SUCCESS:

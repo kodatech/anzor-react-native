@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {Actions} from 'react-native-router-flux'
-import {Container, Content, Header, Button, Text, Left, Right, Footer, FooterTab, List, ListItem, Body, ActionSheet, Spinner, Input, Icon} from 'native-base'
-import {Dimensions, StyleSheet, AsyncStorage, View, NetInfo, Networking, TouchableWithoutFeedback} from 'react-native'
+import {Container, Content, Header, Button, Text, Left, Right, Footer, FooterTab, List, Body, ActionSheet, Spinner, Input, Icon, ListItem} from 'native-base'
+import {Dimensions, StyleSheet, AsyncStorage, View, NetInfo, Networking, TouchableWithoutFeedback, ListView} from 'react-native'
 import {connect} from 'react-redux'
 import {getCartList, qtyChanged, clearList, deleteProduct, setIsConnected, checkOut, checkIfLoggedOn, logOut} from '../actions'
 import {ConfirmModalScene} from './confirmModalScene'
@@ -36,6 +36,9 @@ class ListScene extends Component {
   async componentWillMount () {
     this.props.checkIfLoggedOn('listScene')
     this.props.getCartList()
+
+    this.createDataSource(this.props.cart.list)
+
     let address = ADDRESS
     fetch(address, { method: 'HEAD' })
       .then(() => {
@@ -44,6 +47,17 @@ class ListScene extends Component {
       .catch(() => {
         this.props.setIsConnected(false)
       })
+  }
+
+  componentWillReceiveProps (nextProps) {
+    this.createDataSource(nextProps.cart.list)
+  }
+
+  createDataSource (list) {
+    const ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2
+    })
+    this.dataSource = ds.cloneWithRows(list)
   }
 
   componentDidMount() {
@@ -107,6 +121,125 @@ class ListScene extends Component {
     // console.log(this.state.widthDescription)
   }
 
+  // articleList() {
+  //   if (!this.props.conn.isConnected) {
+  //     return (
+  //       <Content style={{flex: 1, flexDirection: 'column'}}>
+  //         <Icon style={{fontSize: 100, marginLeft: 130, marginTop: 100, color: 'gray'}} name='md-cloud-outline' />
+  //         <Text style={{fontSize: 10, marginLeft: 125, paddingTop: 10, color: 'gray'}}>No Internet Connection</Text>
+  //       </Content>
+  //     )
+  //   }
+  //   if (this.props.conn.isConnected && !this.props.cart.loading) {
+  //     // console.log(this.props.cart.loading)
+  //     // if(!this.props.cart.loading) {
+  //     return (
+  //       <Content style={{marginLeft: 2}}>
+  //         <ListItem style={{flexDirection: 'row', justifyContent: 'center'}}>
+  //           <View>
+  //             <Text style={{color: 'red'}}>{this.props.cart.error}</Text>
+  //             <Text style={{textAlignVertical: 'center', fontSize: 25}}>Scanned Product List</Text>
+  //           </View>
+  //         </ListItem>
+  //         <List dataArray={this.props.cart.list}
+  //           renderRow={(item) =>
+  //             <ListItem>
+  //               <Body>
+  //                 <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+  //                   <Text style={{color: '#0083a9', width: this.state.widthDescription}}>{item.description}</Text>
+  //                   <TouchableWithoutFeedback style={{width: 40, height: 40}} onPress={() => this.setState({
+  //                     showModal: !this.state.showModal,
+  //                     itemToDelete: item.code
+  //                   })}><Text style={{fontWeight: 'bold'}}>X</Text></TouchableWithoutFeedback>
+  //                 </View>
+  //                 <Text note>{item.stockcode}</Text>
+  //                 <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignContent: 'flex-start'}}>
+  //                   <Text style={{textAlignVertical: 'center', width: 25}}>Qty</Text>
+  //                   <View style={{width: 60, marginLeft: 0, paddingLeft: 0}}>
+  //                     <Input name={item.code} defaultValue={item.value.toString()}
+  //                       // onEndEditing={
+  //                       onChange={
+  //                         (e) => {
+  //                           if (e.nativeEvent.text.trim() === '') {
+  //                             return
+  //                           }
+  //                           this.onQtyChange(item.code, e.nativeEvent.text)
+  //                         }
+  //                       }
+  //                       keyboardType='numeric' editable />
+  //                   </View>
+  //                   <Text style={{textAlignVertical: 'center', width: 10, marginLeft: 1}}>x</Text>
+  //                   <Text style={{textAlignVertical: 'center', width: 10, paddingLeft: 1, marginLeft: 1}}>$</Text>
+  //                   <Text style={{textAlignVertical: 'center', width: 60, marginLeft: 1, marginRight: 5}}>{item.price}</Text>
+  //                   <Text style={{textAlignVertical: 'center', width: 10, paddingLeft: 1, marginLeft: 1}}>=</Text>
+  //                   <Text style={{textAlignVertical: 'center', marginLeft: 1}}>{item.total}</Text>
+  //                 </View>
+  //               </Body>
+  //             </ListItem>
+  //         } />
+  //         <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center'}}>
+  //           <Text style={{color: 'green', fontSize: this.state.stringHeight, textAlign: 'center'}}>{this.props.cart.message}</Text>
+  //           <Text style={{color: 'green', fontSize: this.state.arrowHeight, textAlign: 'center'}}>{this.props.cart.arrow}</Text>
+  //         </View>
+  //         <ListItem style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+  //           <View style={{flexDirection: 'row', justifyContent: 'center', paddingLeft: 12}}>
+  //             <Text style={{textAlignVertical: 'center', fontWeight: 'bold'}}>{this.props.cart.list.length}</Text>
+  //             <Text style={{textAlignVertical: 'center', fontWeight: 'bold'}}> items</Text>
+  //           </View>
+  //           <View style={{flexDirection: 'row', justifyContent: 'center', paddingRight: 12}}>
+  //             <Text style={{textAlignVertical: 'center', fontWeight: 'bold'}}>Total: </Text>
+  //             <Text style={{textAlignVertical: 'center', fontWeight: 'bold'}}>{this.props.cart.totalOrder}</Text>
+  //           </View>
+  //         </ListItem>
+  //         <ConfirmModalScene
+  //           visible={this.state.showModal}
+  //           onAccept={this.onAccept.bind(this)}
+  //           onDecline={this.onDecline.bind(this)}>
+  //           Are you sure you want to delete this?
+  //         </ConfirmModalScene>
+  //       </Content>
+  //     )
+  //   }
+  // }
+
+  renderRow(item) {
+    return (
+      <ListItem>
+        <Body>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <Text style={{color: '#0083a9', width: this.state.widthDescription}}>{item.description}</Text>
+            <TouchableWithoutFeedback style={{width: 40, height: 40}} onPress={() => this.setState({
+              showModal: !this.state.showModal,
+              itemToDelete: item.code
+            })}><Text style={{fontWeight: 'bold'}}>X</Text></TouchableWithoutFeedback>
+          </View>
+          <Text note>{item.stockcode}</Text>
+          <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignContent: 'flex-start'}}>
+            <Text style={{textAlignVertical: 'center', width: 25}}>Qty</Text>
+            <View style={{width: 60, marginLeft: 0, paddingLeft: 0}}>
+              <Input name={item.code} defaultValue={item.value.toString()}
+                // onEndEditing={
+                onChange={
+                  (e) => {
+                    if (e.nativeEvent.text.trim() === '') {
+                      return
+                    }
+                    this.onQtyChange(item.code, e.nativeEvent.text)
+                  }
+                }
+                keyboardType='numeric' editable />
+            </View>
+            <Text style={{textAlignVertical: 'center', width: 10, marginLeft: 1}}>x</Text>
+            <Text style={{textAlignVertical: 'center', width: 10, paddingLeft: 1, marginLeft: 1}}>$</Text>
+            <Text style={{textAlignVertical: 'center', width: 60, marginLeft: 1, marginRight: 5}}>{item.price}</Text>
+            <Text style={{textAlignVertical: 'center', width: 10, paddingLeft: 1, marginLeft: 1}}>=</Text>
+            <Text style={{textAlignVertical: 'center', marginLeft: 1}}>{item.total}</Text>
+          </View>
+        </Body>
+      </ListItem>
+    )
+  }
+
   articleList() {
     if (!this.props.conn.isConnected) {
       return (
@@ -117,56 +250,61 @@ class ListScene extends Component {
       )
     }
     if (this.props.conn.isConnected && !this.props.cart.loading) {
-      // console.log(this.props.cart.loading)
-      // if(!this.props.cart.loading) {
       return (
-        <Content style={{marginLeft: 2}}>
-          <ListItem style={{flexDirection: 'row', justifyContent: 'center'}}>
-            <View>
-              <Text style={{color: 'red'}}>{this.props.cart.error}</Text>
-              <Text style={{textAlignVertical: 'center', fontSize: 25}}>Scanned Product List</Text>
-            </View>
-          </ListItem>
-          <List dataArray={this.props.cart.list}
-            renderRow={(item) =>
-              <ListItem>
-                <Body>
-                  <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                    <Text style={{color: '#0083a9', width: this.state.widthDescription}}>{item.description}</Text>
-                    <TouchableWithoutFeedback style={{width: 40, height: 40}} onPress={() => this.setState({
-                      showModal: !this.state.showModal,
-                      itemToDelete: item.code
-                    })}><Text style={{fontWeight: 'bold'}}>X</Text></TouchableWithoutFeedback>
-                  </View>
-                  <Text note>{item.stockcode}</Text>
-                  <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignContent: 'flex-start'}}>
-                    <Text style={{textAlignVertical: 'center', width: 25}}>Qty</Text>
-                    <View style={{width: 60, marginLeft: 0, paddingLeft: 0}}>
-                      <Input name={item.code} defaultValue={item.value.toString()}
-                        // onEndEditing={
-                        onChange={
-                          (e) => {
-                            if (e.nativeEvent.text.trim() === '') {
-                              return
+        <View style={{flex: 1}}>
+          <Content>
+            <ListItem style={{flexDirection: 'row', justifyContent: 'center'}}>
+              <View>
+                <Text style={{color: 'red'}}>{this.props.cart.error}</Text>
+                <Text style={{textAlignVertical: 'center', fontSize: 25}}>Scanned Product List</Text>
+              </View>
+            </ListItem>
+            <ListView
+              enableEmptySections
+              dataSource={this.dataSource}
+              renderRow={(item) =>
+                <View>
+                  <ListItem>
+                    <Body>
+                      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <Text style={{color: '#0083a9', width: this.state.widthDescription}}>{item.description}</Text>
+                        <TouchableWithoutFeedback style={{width: 40, height: 40}} onPress={() => this.setState({
+                          showModal: !this.state.showModal,
+                          itemToDelete: item.code
+                        })}><Text style={{fontWeight: 'bold'}}>X</Text></TouchableWithoutFeedback>
+                      </View>
+                      <Text note>{item.stockcode}</Text>
+                      <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignContent: 'flex-start'}}>
+                        <Text style={{textAlignVertical: 'center', width: 25}}>Qty</Text>
+                        <View style={{width: 60, marginLeft: 0, paddingLeft: 0}}>
+                          <Input name={item.code} defaultValue={item.value.toString()}
+                            // onEndEditing={
+                            onChange={
+                              (e) => {
+                                if (e.nativeEvent.text.trim() === '') {
+                                  return
+                                }
+                                this.onQtyChange(item.code, e.nativeEvent.text)
+                              }
                             }
-                            this.onQtyChange(item.code, e.nativeEvent.text)
-                          }
-                        }
-                        keyboardType='numeric' editable />
-                    </View>
-                    <Text style={{textAlignVertical: 'center', width: 10, marginLeft: 1}}>x</Text>
-                    <Text style={{textAlignVertical: 'center', width: 10, paddingLeft: 1, marginLeft: 1}}>$</Text>
-                    <Text style={{textAlignVertical: 'center', width: 60, marginLeft: 1, marginRight: 5}}>{item.price}</Text>
-                    <Text style={{textAlignVertical: 'center', width: 10, paddingLeft: 1, marginLeft: 1}}>=</Text>
-                    <Text style={{textAlignVertical: 'center', marginLeft: 1}}>{item.total}</Text>
-                  </View>
-                </Body>
-              </ListItem>
-          } />
-          <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center'}}>
-            <Text style={{color: 'green', fontSize: this.state.stringHeight, textAlign: 'center'}}>{this.props.cart.message}</Text>
-            <Text style={{color: 'green', fontSize: this.state.arrowHeight, textAlign: 'center'}}>{this.props.cart.arrow}</Text>
-          </View>
+                            keyboardType='numeric' editable />
+                        </View>
+                        <Text style={{textAlignVertical: 'center', width: 10, marginLeft: 1}}>x</Text>
+                        <Text style={{textAlignVertical: 'center', width: 10, paddingLeft: 1, marginLeft: 1}}>$</Text>
+                        <Text style={{textAlignVertical: 'center', width: 60, marginLeft: 1, marginRight: 5}}>{item.price}</Text>
+                        <Text style={{textAlignVertical: 'center', width: 10, paddingLeft: 1, marginLeft: 1}}>=</Text>
+                        <Text style={{textAlignVertical: 'center', marginLeft: 1}}>{item.total}</Text>
+                      </View>
+                    </Body>
+                  </ListItem>
+                </View>
+              }
+            />
+            <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center'}}>
+              <Text style={{color: 'green', fontSize: this.state.stringHeight, textAlign: 'center'}}>{this.props.cart.message}</Text>
+              <Text style={{color: 'green', fontSize: this.state.arrowHeight, textAlign: 'center'}}>{this.props.cart.arrow}</Text>
+            </View>
+          </Content>
           <ListItem style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <View style={{flexDirection: 'row', justifyContent: 'center', paddingLeft: 12}}>
               <Text style={{textAlignVertical: 'center', fontWeight: 'bold'}}>{this.props.cart.list.length}</Text>
@@ -183,7 +321,7 @@ class ListScene extends Component {
             onDecline={this.onDecline.bind(this)}>
             Are you sure you want to delete this?
           </ConfirmModalScene>
-        </Content>
+        </View>
       )
     }
   }
@@ -293,7 +431,7 @@ const mapStateToProps = state => {
   return {
     cart: state.cart,
     conn: state.conn,
-    upToCart: state.cart.upToCart
+    upToCart: state.cart.upToCart,
   }
 }
 
