@@ -136,7 +136,7 @@ class ScanScene extends Component {
             borderRightColor: 'transparent',
             width: this.state.angleSize,
             height: this.state.angleSize,
-            borderWidth: 8}} />
+            borderWidth: 2}} />
           <View style={{
             borderLeftColor: 'transparent',
             borderTopColor: this.state.focusStatus ? this.state.rectangleGreenBorderColor : this.state.rectangleBlueBorderColor,
@@ -144,7 +144,7 @@ class ScanScene extends Component {
             borderRightColor: this.state.focusStatus ? this.state.rectangleGreenBorderColor : this.state.rectangleBlueBorderColor,
             width: this.state.angleSize,
             height: this.state.angleSize,
-            borderWidth: 8,
+            borderWidth: 2,
             marginLeft: this.state.widthBetweenAngles}} />
         </View>
         <View style={styles.linered} />
@@ -157,7 +157,7 @@ class ScanScene extends Component {
             borderRightColor: 'transparent',
             width: this.state.angleSize,
             height: this.state.angleSize,
-            borderWidth: 8}} />
+            borderWidth: 2}} />
           <View style={{
             borderLeftColor: 'transparent',
             borderTopColor: 'transparent',
@@ -165,7 +165,7 @@ class ScanScene extends Component {
             borderRightColor: this.state.focusStatus ? this.state.rectangleGreenBorderColor : this.state.rectangleBlueBorderColor,
             width: this.state.angleSize,
             height: this.state.angleSize,
-            borderWidth: 8,
+            borderWidth: 2,
             marginLeft: this.state.widthBetweenAngles}} />
         </View>
       </View>
@@ -232,24 +232,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     height: 1,
     width: 200,
-    borderWidth: 6,
+    borderWidth: 1,
     borderColor: '#FF0000',
     backgroundColor: 'transparent'
   },
-  /* rectanglered: {
-    height: Dimensions.get('window').height / 2.5,
-    width: Dimensions.get('window').width / 1.4,
-    borderWidth: 4,
-    borderColor: '#FF0000',
-    backgroundColor: 'transparent'
-  },
-  rectanglegreen: {
-    height: 250,
-    width: 250,
-    borderWidth: 4,
-    borderColor: '#00FF00',
-    backgroundColor: 'transparent'
-  }, */
   outercirclered: {
     marginBottom: 5,
     borderRadius: 100 / 2,

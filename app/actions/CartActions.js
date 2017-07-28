@@ -282,6 +282,14 @@ export const checkOut = () => {
             email = email.substr(0, email.length - 1)
             pass = pass.substr(1)
             pass = pass.substr(0, pass.length - 1)
+
+            let Crypto = require('crypto-js')
+
+            // let data = '12345678'
+            let key = '59b6ab46d379b89d794c87b74a511fbd59b6ab46d379b89d794c87b74a511fbd'
+            let iv = '0aaff094b6dc29742cc98a4bac8bc8f9'
+            pass = Crypto.AES.encrypt(Crypto.enc.Utf8.parse(pass), Crypto.enc.Hex.parse(key), { iv: Crypto.enc.Hex.parse(iv) })
+
             let url = `${URI}login?name=${email}&pass=${pass}`
             // console.log(url)
             fetch(url)

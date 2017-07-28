@@ -29,7 +29,8 @@ class ListScene extends Component {
       widthDescription: Dimensions.get('window').width / 1.3,
       stringHeight: Dimensions.get('window').height / 25,
       arrowHeight: Dimensions.get('window').height / 8,
-      showModal: false
+      showModal: false,
+      testloading: true
     }
   }
 
@@ -66,6 +67,11 @@ class ListScene extends Component {
     // console.log(Dimensions.get('window').height / 25)
     // console.log(this.props)
     // console.log('acaa', this.props.upToCart)
+    setTimeout(() => {
+      this.setState({
+        testloading: false
+      })
+    }, 5000)
     const dispatchConnected = isConnected => {
       // console.log(isConnected)
       let address = ADDRESS
@@ -333,6 +339,12 @@ class ListScene extends Component {
         <Spinnerd />
       )
     }
+    if (this.state.testloading) {
+      return (
+        <Spinnerd />
+      )
+    }
+
     return (
       <Container style={{flex: 1, flexDirection: 'column', justifyContent: 'space-between'}} onLayout={this.getNewDimensions.bind(this)}>
         <Header style={{backgroundColor: '#0083a9', height: this.state.headerButtonHeight + 20, paddingTop: 10, paddingBottom: 10, elevation: 0}}>
@@ -427,7 +439,7 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => {
-  console.log(state)
+  // console.log(state)
   return {
     cart: state.cart,
     conn: state.conn,
