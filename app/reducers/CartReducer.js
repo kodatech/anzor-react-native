@@ -13,6 +13,7 @@ import {
   CHECK_OUT,
   CHECK_OUT_SUCCESS,
   CHECK_OUT_FAIL,
+  CHANGE_VIEW_CART_STATUS,
   ADD_NEW_PRODUCT,
   STORE_PRODUCT_SUCCESS,
   STORE_PRODUCT_FAIL,
@@ -29,7 +30,8 @@ const INITIAL_STATE = {
   error: '',
   upToCart: false,
   product: false,
-  qtyFromProduct: '1'
+  // qtyFromProduct: '1',
+  viewCart: false
 }
 
 export default (state = INITIAL_STATE, action) => {
@@ -40,7 +42,7 @@ export default (state = INITIAL_STATE, action) => {
     case QTY_CHANGED_SUCCESS:
       return { ...state, qty: action.payload, error: '' }
     case QTY_CHANGED_FAIL:
-      return state
+      return { ...state, error: action.error }
     case GET_CART_LIST:
       return { ...state, loading: true, error: '' }
     case CART_LIST_SUCCESS:
@@ -56,17 +58,23 @@ export default (state = INITIAL_STATE, action) => {
     case DELETE_PRODUCT_FAIL:
       return { ...state, list: action.payload, loading: false, error: '' }
     case CHECK_OUT:
-      return { ...state, loading: true, error: '' }
+      return { ...state,
+        loading: true,
+        error: '',
+        viewCart: true }
     case CHECK_OUT_SUCCESS:
       return { ...state,
         list: action.payload,
         totalOrder: action.totalOrder,
         loading: false,
-        // message: 'Great! Your products have been uploaded to your cart. ',
+        // viewCart: false
+        message: 'Great! Your products have been uploaded to your cart. ',
         // arrow: '↓'
       }
     case CHECK_OUT_FAIL:
       return { ...state, loading: false, error: 'Check out fail!' }
+    case CHANGE_VIEW_CART_STATUS:
+      return { ...state, viewCart: action.payload }
     case ADD_NEW_PRODUCT:
       return { ...state, loading: true }
     case GET_PRODUCT_FOR_QTY:

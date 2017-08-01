@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {Actions} from 'react-native-router-flux'
 import {Container, Content, Header, Button, Text, Left, Right, Footer, FooterTab, List, Body, ActionSheet, Spinner, Input, Icon, ListItem} from 'native-base'
-import {Dimensions, StyleSheet, AsyncStorage, View, NetInfo, Networking, TouchableWithoutFeedback, ListView} from 'react-native'
+import {Dimensions, StyleSheet, AsyncStorage, View, NetInfo, Networking, TouchableWithoutFeedback, ListView, TextInput} from 'react-native'
 import {connect} from 'react-redux'
 import {getCartList, qtyChanged, clearList, deleteProduct, setIsConnected, checkOut, checkIfLoggedOn, logOut} from '../actions'
 import {ConfirmModalScene} from './confirmModalScene'
@@ -28,6 +28,8 @@ class ListScene extends Component {
       widthDescription: Dimensions.get('window').width / 1.3,
       stringHeight: Dimensions.get('window').height / 25,
       arrowHeight: Dimensions.get('window').height / 8,
+      buttonBlue: '#0083a9',
+      buttonGrey: '#D3D3D3',
       showModal: false,
       testloading: true
     }
@@ -121,7 +123,7 @@ class ListScene extends Component {
       <ListItem>
         <Body>
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <Text style={{color: '#0083a9', width: this.state.widthDescription}}>{item.description}</Text>
+            <Text style={{color: this.state.buttonBlue, width: this.state.widthDescription}}>{item.description}</Text>
             <TouchableWithoutFeedback style={{width: 40, height: 40}} onPress={() => this.setState({
               showModal: !this.state.showModal,
               itemToDelete: item.code
@@ -131,7 +133,7 @@ class ListScene extends Component {
           <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignContent: 'flex-start'}}>
             <Text style={{textAlignVertical: 'center', width: 25}}>Qty</Text>
             <View style={{width: 60, marginLeft: 0, paddingLeft: 0}}>
-              <Input name={item.code} defaultValue={item.value.toString()}
+              <TextInput name={item.code} defaultValue={item.value.toString()}
                 // onEndEditing={
                 onChange={
                   (e) => {
@@ -141,7 +143,8 @@ class ListScene extends Component {
                     this.onQtyChange(item.code, e.nativeEvent.text)
                   }
                 }
-                keyboardType='numeric' editable />
+                keyboardType='numeric'
+                editable />
             </View>
             <Text style={{textAlignVertical: 'center', width: 10, marginLeft: 1}}>x</Text>
             <Text style={{textAlignVertical: 'center', width: 10, paddingLeft: 1, marginLeft: 1}}>$</Text>
@@ -182,7 +185,7 @@ class ListScene extends Component {
                   <ListItem>
                     <Body>
                       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                        <Text style={{color: '#0083a9', width: this.state.widthDescription}}>{item.description}</Text>
+                        <Text style={{color: this.state.buttonBlue, width: this.state.widthDescription}}>{item.description}</Text>
                         <TouchableWithoutFeedback style={{width: 40, height: 40}} onPress={() => this.setState({
                           showModal: !this.state.showModal,
                           itemToDelete: item.code
@@ -215,10 +218,6 @@ class ListScene extends Component {
                 </View>
               }
             />
-            <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center'}}>
-              <Text style={{color: 'green', fontSize: this.state.stringHeight, textAlign: 'center'}}>{this.props.cart.message}</Text>
-              <Text style={{color: 'green', fontSize: this.state.arrowHeight, textAlign: 'center'}}>{this.props.cart.arrow}</Text>
-            </View>
           </Content>
           <ListItem style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <View style={{flexDirection: 'row', justifyContent: 'center', paddingLeft: 12}}>
@@ -282,19 +281,24 @@ class ListScene extends Component {
                 this.onCheckOut.bind(this)
               }
               disabled={!this.props.conn.isConnected || !this.props.upToCart || this.props.cart.loading}
-              style={{backgroundColor: '#0083a9', height: this.state.footerButtonHeight, marginLeft: 10, marginRight: 5}}>
+              style={{backgroundColor: !this.props.cart.upToCart ? this.state.buttonGrey : this.state.buttonBlue, height: this.state.footerButtonHeight, marginLeft: 10, marginRight: 5}}>
               <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
                 <Icon style={{fontSize: 35}} color='white' name='ios-cloud-upload-outline' />
                 <Text style={{textAlign: 'center', color: 'white'}}>Upload to Cart</Text>
               </View>
             </Button>
-            <Button onPress={Actions.cartScene} disabled={!this.props.conn.isConnected || this.props.cart.loading} style={{backgroundColor: '#0083a9', marginLeft: 5, height: this.state.footerButtonHeight, marginRight: 5}}>
+            <Button
+              onPress={Actions.cartScene}
+              disabled={!this.props.conn.isConnected || !this.props.cart.viewCart}
+              style={{backgroundColor: !this.props.cart.viewCart ? this.state.buttonGrey : this.state.buttonBlue, marginLeft: 5, height: this.state.footerButtonHeight, marginRight: 5}}>
               <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
                 <Icon style={{fontSize: 35}} color='white' name='ios-cart-outline' />
                 <Text style={{textAlign: 'center', color: 'white'}}>View Cart</Text>
               </View>
             </Button>
-            <Button onPress={this.bottomOptions.bind(this)} style={{backgroundColor: '#0083a9', marginLeft: 5, height: this.state.footerButtonHeight, marginRight: 10}}>
+            <Button
+              onPress={this.bottomOptions.bind(this)}
+              style={{backgroundColor: this.state.buttonBlue, marginLeft: 5, height: this.state.footerButtonHeight, marginRight: 10}}>
               <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
                 <Icon style={{fontSize: 35}} color='white' name='ios-list-outline' />
                 <Text style={{textAlign: 'center', color: 'white'}}>Other Actions</Text>

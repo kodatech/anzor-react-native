@@ -3,7 +3,7 @@ import { WebView, Text, View, TouchableOpacity, StyleSheet } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import { Spinner, Icon } from 'native-base'
 import {connect} from 'react-redux'
-import {checkIfLoggedOn} from '../../actions'
+import {checkIfLoggedOn, changeViewCartStatus} from '../../actions'
 import { URI } from '../../actions/configuration'
 // console.log(URI)
 import Spinnera from '../loaders/Spinnera'
@@ -20,6 +20,7 @@ class CartScene extends Component {
 
   componentWillMount() {
     this.props.checkIfLoggedOn('cartScene')
+    this.props.changeViewCartStatus()
   }
 
   renderLoading() {
@@ -105,4 +106,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, {checkIfLoggedOn})(CartScene)
+export default connect(mapStateToProps, {checkIfLoggedOn, changeViewCartStatus})(CartScene)

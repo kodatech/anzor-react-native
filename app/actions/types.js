@@ -11,6 +11,7 @@ export const CART_LIST_FAIL = 'cart_list_fail'
 export const CHECK_OUT = 'check_out'
 export const CHECK_OUT_SUCCESS = 'check_out_success'
 export const CHECK_OUT_FAIL = 'check_out_fail'
+export const CHANGE_VIEW_CART_STATUS = 'change_view_cart_status'
 
 export const ADD_NEW_PRODUCT = 'add_new_product'
 export const STORE_PRODUCT_SUCCESS = 'store_product_success'

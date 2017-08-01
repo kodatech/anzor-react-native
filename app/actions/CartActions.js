@@ -14,6 +14,7 @@ import {
   CHECK_OUT,
   CHECK_OUT_SUCCESS,
   CHECK_OUT_FAIL,
+  CHANGE_VIEW_CART_STATUS,
   ADD_NEW_PRODUCT,
   STORE_PRODUCT_SUCCESS,
   STORE_PRODUCT_FAIL,
@@ -58,7 +59,8 @@ export const qtyChanged = (text, id) => {
     if (text.trim() === '') {
       return ({
         type: QTY_CHANGED_FAIL,
-        payload: 0
+        payload: 1,
+        error: 'Please, enter quantity'
       })
     }
     AsyncStorage.getItem('orders').then(storedList => {
@@ -71,7 +73,8 @@ export const qtyChanged = (text, id) => {
       .then(() => {
         dispatch({
           type: QTY_CHANGED_SUCCESS,
-          payload: text
+          payload: text,
+          error: ''
         })
         AsyncStorage.getItem('orders')
         .then(newList => {
@@ -167,7 +170,6 @@ export const deleteProduct = (id) => {
               }
             })
             .catch((error) => {
-              // console.error(error + ' IN FETCH CATCH CART_LIST_SUCCESS')
               if (error) {
                 console.log('2', key)
                 delete obj[key]
@@ -261,6 +263,13 @@ export const checkOut = () => {
       }
     })
   }
+}
+
+export const changeViewCartStatus = () => {
+  return ({
+    type: CHANGE_VIEW_CART_STATUS,
+    payload: false
+  })
 }
 
 const storeScannedProducts = (barCodeScannedValue, stores, responseJson) => {
@@ -360,7 +369,7 @@ export const addQtyNewProduct = (barCodeScannedValue) => {
       .then((response) => response.json())
       .then((responseJson) => {
         if (typeof (responseJson) === 'object') {
-          console.log(responseJson)
+          // console.log(responseJson[0])
           dispatch({
             type: GET_PRODUCT_FOR_QTY,
             payload: responseJson,
@@ -381,7 +390,7 @@ export const addNewProduct = () => {
     dispatch({type: ADD_NEW_PRODUCT})
     barCodeScannedValue = state.cart.product[0].barcode
     let responseJson = state.cart.product
-    if (typeof (responseJson) === 'object') {
+    if (typeof (responseJson) === 'object' && responseJson[0].quantity) {
       dispatch({
         type: GET_PRODUCT_FOR_QTY,
         payload: responseJson,
