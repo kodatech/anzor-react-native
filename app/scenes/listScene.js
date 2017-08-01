@@ -133,6 +133,11 @@ class ListScene extends Component {
           <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignContent: 'flex-start'}}>
             <Text style={{textAlignVertical: 'center', width: 25}}>Qty</Text>
             <View style={{width: 60, marginLeft: 0, paddingLeft: 0}}>
+              <TextInput
+                style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+                onChangeText={(text) => this.setState({text})}
+                value='hee'
+              />
               <TextInput name={item.code} defaultValue={item.value.toString()}
                 // onEndEditing={
                 onChange={
@@ -194,7 +199,7 @@ class ListScene extends Component {
                       <Text note>{item.stockcode}</Text>
                       <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignContent: 'flex-start'}}>
                         <Text style={{textAlignVertical: 'center', width: 25}}>Qty</Text>
-                        <View style={{width: 60, marginLeft: 0, paddingLeft: 0}}>
+                        <View style={{padding: 0, backgroundColor: 'transparent', flex: 1, borderColor: 'grey', borderWidth: 1, height: 30, alignContent: 'center'}}>
                           <Input name={item.code} defaultValue={item.value.toString()}
                             // onEndEditing={
                             onChange={
@@ -205,7 +210,7 @@ class ListScene extends Component {
                                 this.onQtyChange(item.code, e.nativeEvent.text)
                               }
                             }
-                            keyboardType='numeric' editable />
+                            keyboardType='numeric' editable style={{padding: 3}} />
                         </View>
                         <Text style={{textAlignVertical: 'center', width: 10, marginLeft: 1}}>x</Text>
                         <Text style={{textAlignVertical: 'center', width: 10, paddingLeft: 1, marginLeft: 1}}>$</Text>

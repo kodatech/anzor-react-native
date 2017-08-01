@@ -55,7 +55,7 @@ class QtyScene extends Component {
             <TouchableOpacity
               style={{paddingBottom: 0, height: 80, width: 200, backgroundColor: '#000000', alignItems: 'center'}}
               onPress={this.addNewProduct.bind(this)}>
-              <Text style={{color: '#FFFFFF', fontSize: 25, textAlign: 'center', textAlignVertical: 'center'}}>Done!!</Text>
+              <Text style={{color: '#FFFFFF', fontSize: 25, textAlign: 'center', textAlignVertical: 'center'}}>Done</Text>
             </TouchableOpacity>
           </View>
         </View>
