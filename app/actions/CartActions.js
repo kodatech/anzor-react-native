@@ -18,7 +18,9 @@ import {
   STORE_PRODUCT_SUCCESS,
   STORE_PRODUCT_FAIL,
   CART_NO_CONNECTED,
-  LOGGED_ON_FAIL
+  LOGGED_ON_FAIL,
+  GET_PRODUCT_FOR_QTY,
+  QTY_CHANGED_FROM_PRODUCT
 } from './types'
 
 export const clearList = () => {
@@ -35,6 +37,20 @@ export const clearList = () => {
   })
 }
 
+export const qtyChangeFromProduct = (text) => {
+  return (dispatch, getState) => {
+    let state = getState()
+    console.log(state)
+    let product = state.cart.product[0]
+    product.quantity = text
+    product.totalline = parseFloat(parseFloat(product.sell_price_1) * parseInt(text)).toFixed(4)
+    return ({
+      type: QTY_CHANGED_FROM_PRODUCT,
+      payload: product
+    })
+  }
+}
+
 export const qtyChanged = (text, id) => {
   return async (dispatch, getState) => {
     let state = getState()
@@ -47,9 +63,7 @@ export const qtyChanged = (text, id) => {
     }
     AsyncStorage.getItem('orders').then(storedList => {
       let obj = JSON.parse(storedList)
-      // console.log(obj[id])
       let value = id.toString(), order = {
-          // [value]: parseInt(text)
           [value]: {'quantity': parseInt(text),
             'totalline': parseFloat(parseFloat((obj[id].totalline) / parseInt(obj[id].quantity)) * parseInt(text)).toFixed(4)}
         }
@@ -58,67 +72,10 @@ export const qtyChanged = (text, id) => {
         dispatch({
           type: QTY_CHANGED_SUCCESS,
           payload: text
-          // list: products,
-          // totalOrder: totalOrder
         })
         AsyncStorage.getItem('orders')
         .then(newList => {
           getProductsFromStorage(dispatch, newList, state)
-          // let obj = JSON.parse(newList)
-          // if (obj === null) {
-          //   dispatch({
-          //     type: CART_LIST_FAIL,
-          //     payload: []
-          //   })
-          // }
-          // const products = []
-          // // console.log(obj)
-          // let totalOrder = 0
-          // for (let key in obj) {
-          //   if (obj[key]) {
-          //     let url = `${URI}product?barCode=${key}&uid=${state.auth.uid}`
-          //     fetch(url)
-          //       .then((response) => response.json())
-          //       .then((responseJson) => {
-          //         if (typeof (responseJson) === 'object') {
-          //           products.push({
-          //             description: responseJson[0].description,
-          //             stockcode: responseJson[0].stockcode,
-          //             price: parseFloat(responseJson[0].sell_price_1).toFixed(4),
-          //             code: key,
-          //             value: obj[key].quantity,
-          //             total: obj[key].totalline
-          //           })
-          //           totalOrder = parseFloat(parseFloat(totalOrder) + parseFloat(obj[key].totalline)).toFixed(2)
-          //           if (Object.keys(obj).length === products.length) {
-          //             products.sort(function (a, b) {
-          //               if (a.description > b.description) {
-          //                 return 1
-          //               }
-          //               if (a.description < b.description) {
-          //                 return -1
-          //               }
-          //               // a must be equal to b
-          //               return 0
-          //             })
-          //             dispatch({
-          //               type: QTY_CHANGED_SUCCESS,
-          //               payload: text,
-          //               list: products,
-          //               totalOrder: totalOrder
-          //             })
-          //           }
-          //         } else {
-          //           console.log('1', key)
-          //           delete obj[key]
-          //         }
-          //       })
-          //       .catch((error) => {
-          //         console.log('2', error)
-          //         delete obj[key]
-          //       })
-          //   }
-          // }
         })
       })
 
@@ -133,53 +90,6 @@ export const getCartList = () => {
     let state = getState()
     AsyncStorage.getItem('orders').then(storedList => {
       getProductsFromStorage(dispatch, storedList, state)
-      // let obj = JSON.parse(storedList)
-      // if (obj === null) {
-      //   dispatch({
-      //     type: CART_LIST_FAIL,
-      //     payload: [],
-      //     upToCart: false
-      //   })
-      // }
-      // const products = []
-      // let totalOrder = 0
-      //
-      // for (let key in obj) {
-      //   if (obj[key]) {
-      //     products.push({
-      //       description: obj[key].description,
-      //       stockcode: obj[key].stockcode,
-      //       price: parseFloat(obj[key].price).toFixed(4),
-      //       code: key,
-      //       value: obj[key].quantity,
-      //       total: obj[key].totalline
-      //     })
-      //     totalOrder = parseFloat(parseFloat(totalOrder) + parseFloat(obj[key].totalline)).toFixed(2)
-      //     if (Object.keys(obj).length === products.length) {
-      //       // console.log(obj)
-      //       products.sort(function (a, b) {
-      //         if (a.description > b.description) {
-      //           return 1
-      //         }
-      //         if (a.description < b.description) {
-      //           return -1
-      //         }
-      //         // a must be equal to b
-      //         return 0
-      //       })
-      //       dispatch({
-      //         type: CART_LIST_SUCCESS,
-      //         payload: products,
-      //         totalOrder: totalOrder,
-      //         loading: false,
-      //         upToCart: true
-      //       })
-      //     }
-      //   } else {
-      //     console.log('1', key)
-      //     delete obj[key]
-      //   }
-      // }
     })
   }
 }
@@ -323,7 +233,7 @@ export const checkOut = () => {
                   .then(response => response.json())
                   .then((responseJson) => {
                     if (responseJson) {
-                      console.log(responseJson)
+                      // console.log(responseJson)
                       AsyncStorage.removeItem('orders')
                       dispatch({
                         type: CHECK_OUT_SUCCESS,
@@ -402,31 +312,6 @@ const getProductsFromStorage = (dispatch, storedList, state) => {
       payload: []
     })
   }
-
-  // let totalOrder = 0
-  // const list = _.map(storedList, (val, uid) => {
-  //   totalOrder = parseFloat(parseFloat(totalOrder) + parseFloat(val.totalline)).toFixed(2)
-  //   return {...val, uid}
-  // })
-  // list.sort(function(a, b) {
-  //   if (a.stockcode > b.stockcode) {
-  //     return 1
-  //   }
-  //   if (a.stockcode < b.stockcode) {
-  //     return -1
-  //   }
-  //     // a must be equal to b
-  //   return 0
-  // })
-  //
-  // dispatch({
-  //   type: CART_LIST_SUCCESS,
-  //   payload: products,
-  //   totalOrder: totalOrder,
-  //   loading: false,
-  //   upToCart: true
-  // })
-
   const products = []
   let totalOrder = 0
   for (let key in obj) {
@@ -466,25 +351,19 @@ const getProductsFromStorage = (dispatch, storedList, state) => {
   }
 }
 
-export const addNewProduct = (barCodeScannedValue) => {
+export const addQtyNewProduct = (barCodeScannedValue) => {
   return async (dispatch, getState) => {
     dispatch({type: ADD_NEW_PRODUCT})
     let state = getState()
-
     let url = `${URI}product?barCode=${barCodeScannedValue}&uid=${state.auth.uid}`
-    // console.log(url)
     fetch(url)
       .then((response) => response.json())
       .then((responseJson) => {
-        // console.log(responseJson)
         if (typeof (responseJson) === 'object') {
-          AsyncStorage.getItem('orders').then(stores => {
-            storeScannedProducts(barCodeScannedValue, stores, responseJson)
-          })
-          .then(() => {
-            AsyncStorage.getItem('orders').then(async (storedList) => {
-              getProductsFromStorage(dispatch, storedList, state)
-            })
+          console.log(responseJson)
+          dispatch({
+            type: GET_PRODUCT_FOR_QTY,
+            payload: responseJson,
           })
         } else {
           dispatch({
@@ -492,5 +371,34 @@ export const addNewProduct = (barCodeScannedValue) => {
           })
         }
       })
+  }
+}
+
+export const addNewProduct = () => {
+  return async (dispatch, getState) => {
+    let state = getState()
+    console.log(state)
+    dispatch({type: ADD_NEW_PRODUCT})
+    barCodeScannedValue = state.cart.product[0].barcode
+    let responseJson = state.cart.product
+    if (typeof (responseJson) === 'object') {
+      dispatch({
+        type: GET_PRODUCT_FOR_QTY,
+        payload: responseJson,
+      })
+      AsyncStorage.getItem('orders').then(stores => {
+        storeScannedProducts(barCodeScannedValue, stores, responseJson)
+      })
+      .then(() => {
+        AsyncStorage.getItem('orders').then(async (storedList) => {
+          getProductsFromStorage(dispatch, storedList, state)
+          Actions.listScene()
+        })
+      })
+    } else {
+      dispatch({
+        type: STORE_PRODUCT_FAIL
+      })
+    }
   }
 }

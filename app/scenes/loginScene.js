@@ -42,6 +42,10 @@ class LoginScene extends Component {
     Actions.signUpScene()
   }
 
+  goToForgotPassword () {
+    Actions.passwordScene()
+  }
+
   onButtonPress () {
     // const {email, password} = this.props
     // this.setState({ loading: true })
@@ -93,7 +97,7 @@ class LoginScene extends Component {
               secureTextEntry />
           </Item>
           {this.renderButton()}
-          <Button disabled style={{width: this.state.width / 1.2, marginTop: 15, backgroundColor: '#0083a9', marginLeft: this.state.width / 9.5}}>
+          <Button onPress={this.goToForgotPassword.bind(this)} style={{width: this.state.width / 1.2, marginTop: 15, backgroundColor: '#0083a9', marginLeft: this.state.width / 9.5}}>
             <Text style={{flex: 1, justifyContent: 'center', textAlign: 'center'}}> Forgot Password? </Text>
           </Button>
           <Text style={{color: '#FFFFFF', marginTop: 25}}>{this.props.error}</Text>

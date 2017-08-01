@@ -16,7 +16,9 @@ import {
   ADD_NEW_PRODUCT,
   STORE_PRODUCT_SUCCESS,
   STORE_PRODUCT_FAIL,
-  CART_NO_CONNECTED
+  CART_NO_CONNECTED,
+  GET_PRODUCT_FOR_QTY,
+  QTY_CHANGED_FROM_PRODUCT
 } from '../actions/types'
 
 const INITIAL_STATE = {
@@ -25,12 +27,16 @@ const INITIAL_STATE = {
   loading: true,
   totalOrder: 0,
   error: '',
-  upToCart: false
+  upToCart: false,
+  product: false,
+  qtyFromProduct: '1'
 }
 
 export default (state = INITIAL_STATE, action) => {
   // console.log(action)
   switch (action.type) {
+    case QTY_CHANGED_FROM_PRODUCT:
+      return { ...state, product: action.payload }
     case QTY_CHANGED_SUCCESS:
       return { ...state, qty: action.payload, error: '' }
     case QTY_CHANGED_FAIL:
@@ -56,12 +62,15 @@ export default (state = INITIAL_STATE, action) => {
         list: action.payload,
         totalOrder: action.totalOrder,
         loading: false,
-        message: 'Great! Your products have been uploaded to your cart, press here to view ',
-        arrow: '↓'}
+        // message: 'Great! Your products have been uploaded to your cart. ',
+        // arrow: '↓'
+      }
     case CHECK_OUT_FAIL:
       return { ...state, loading: false, error: 'Check out fail!' }
     case ADD_NEW_PRODUCT:
       return { ...state, loading: true }
+    case GET_PRODUCT_FOR_QTY:
+      return { ...state, product: action.payload, loading: false }
     case STORE_PRODUCT_SUCCESS:
       return { ...state, list: action.payload, loading: false, totalOrder: action.totalOrder, error: '', message: '', arrow: '', upToCart: action.upToCart }
     case STORE_PRODUCT_FAIL:

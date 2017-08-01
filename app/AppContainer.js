@@ -7,10 +7,12 @@ import WelcomeScene from './scenes/welcomeScene'
 import ScanScene from './scenes/scanScene'
 import ListScene from './scenes/listScene'
 import LoginScene from './scenes/loginScene'
+import QtyScene from './scenes/qtyScene'
 
 import HomeScene from './scenes/web/homeScene'
 import CartScene from './scenes/web/cartScene'
 import SignUpScene from './scenes/web/signUpScene'
+import PasswordScene from './scenes/web/passwordScene'
 
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
@@ -72,9 +74,11 @@ export default class AppContainer extends Component {
             <Scene key='loginScene' animation='fade' component={LoginScene} title='Login Scene' hideNavBar />
             <Scene key='listScene' animation='fade' type={ActionConst.REPLACE} component={ListScene} title='List Scene' hideNavBar />
             <Scene key='scanScene' animation='fade' component={ScanScene} title='Scan Scene' hideNavBar />
+            <Scene key='qtyScene' animation='fade' type={ActionConst.REPLACE} component={QtyScene} title='Quantity Scene' hideNavBar />
             <Scene key='homeScene' animation='fade' component={HomeScene} title='Home Scene' hideNavBar />
             <Scene key='cartScene' animation='fade' component={CartScene} title='Cart Scene' hideNavBar />
-            <Scene key='signUpScene' animation='fade' component={SignUpScene} title='Sign Up Scene' hideNavBar />
+            <Scene key='signUpScene' animation='fade' type={ActionConst.REPLACE} component={SignUpScene} title='Sign Up Scene' hideNavBar />
+            <Scene key='passwordScene' animation='fade' type={ActionConst.REPLACE} component={PasswordScene} title='Password Scene' hideNavBar />
           </Router>
         </Provider>
       </Root>

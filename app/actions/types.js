@@ -1,6 +1,7 @@
 export const QTY_CHANGED = 'qty_changed'
 export const QTY_CHANGED_SUCCESS = 'qty_changed_success'
 export const QTY_CHANGED_FAIL = 'qty_changed_fail'
+export const QTY_CHANGED_FROM_PRODUCT = 'qty_changed_from_product'
 
 export const GET_CART_LIST = 'get_cart_list'
 export const CART_LIST_SUCCESS = 'cart_list_success'
@@ -14,6 +15,7 @@ export const CHECK_OUT_FAIL = 'check_out_fail'
 export const ADD_NEW_PRODUCT = 'add_new_product'
 export const STORE_PRODUCT_SUCCESS = 'store_product_success'
 export const STORE_PRODUCT_FAIL = 'store_product_fail'
+export const GET_PRODUCT_FOR_QTY = 'get_product_for_qty'
 
 export const CART_NO_CONNECTED = 'cart_no_connected'
 
