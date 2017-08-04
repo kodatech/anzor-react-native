@@ -74,7 +74,7 @@ export default (state = INITIAL_STATE, action) => {
     case CHECK_OUT_FAIL:
       return { ...state, loading: false, error: 'Check out fail!' }
     case CHANGE_VIEW_CART_STATUS:
-      return { ...state, viewCart: action.payload }
+      return { ...state, viewCart: action.payload, message: '' }
     case ADD_NEW_PRODUCT:
       return { ...state, loading: true }
     case GET_PRODUCT_FOR_QTY:

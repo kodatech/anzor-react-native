@@ -6,8 +6,7 @@ import {connect} from 'react-redux'
 import {getCartList, qtyChanged, clearList, deleteProduct, setIsConnected, checkOut, checkIfLoggedOn, logOut} from '../actions'
 import {ConfirmModalScene} from './confirmModalScene'
 import { ADDRESS } from '../actions/configuration'
-import Spinnera from './loaders/Spinnera'
-import Spinnerd from './loaders/Spinnerd'
+import SpinnerList from './loaders/SpinnerList'
 
 /* *
  * Define the scene with cart.
@@ -127,7 +126,7 @@ class ListScene extends Component {
             <TouchableWithoutFeedback style={{width: 40, height: 40}} onPress={() => this.setState({
               showModal: !this.state.showModal,
               itemToDelete: item.code
-            })}><Text style={{fontWeight: 'bold'}}>X</Text></TouchableWithoutFeedback>
+            })}><View><Text style={{fontWeight: 'bold'}}>X</Text></View></TouchableWithoutFeedback>
           </View>
           <Text note>{item.stockcode}</Text>
           <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignContent: 'flex-start'}}>
@@ -149,7 +148,8 @@ class ListScene extends Component {
                   }
                 }
                 keyboardType='numeric'
-                editable />
+                editable
+                autoFocus={false} />
             </View>
             <Text style={{textAlignVertical: 'center', width: 10, marginLeft: 1}}>x</Text>
             <Text style={{textAlignVertical: 'center', width: 10, paddingLeft: 1, marginLeft: 1}}>$</Text>
@@ -245,18 +245,23 @@ class ListScene extends Component {
     }
   }
 
+  scanScene () {
+    Actions.scanScene({type: 'reset'})
+  }
+
   render () {
     // console.log(this.props)
     if (this.props.cart.loading) {
       return (
-        <Spinnerd />
+        <SpinnerList />
       )
     }
     if (this.state.testloading) {
       return (
-        <Spinnerd />
+        <SpinnerList />
       )
     }
+//               disabled={!this.props.conn.isConnected || !this.props.cart.viewCart}
 
     return (
       <Container style={{flex: 1, flexDirection: 'column', justifyContent: 'space-between'}} onLayout={this.getNewDimensions.bind(this)}>
@@ -270,7 +275,7 @@ class ListScene extends Component {
             </Button>
           </Left>
           <Right style={{paddingRight: 20}}>
-            <Button onPress={Actions.scanScene} disabled={!this.props.conn.isConnected} style={{backgroundColor: 'black', height: this.state.headerButtonHeight, width: this.state.headerButtonWidth}}>
+            <Button onPress={this.scanScene.bind(this)} disabled={!this.props.conn.isConnected} style={{backgroundColor: 'black', height: this.state.headerButtonHeight, width: this.state.headerButtonWidth}}>
               <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
                 <Icon style={{fontSize: this.state.headerButtonHeight / 2.5}} color='white' name='md-barcode' />
                 <Text style={{fontSize: 15, textAlign: 'center'}}>Scan Barcode</Text>
@@ -294,8 +299,8 @@ class ListScene extends Component {
             </Button>
             <Button
               onPress={Actions.cartScene}
-              disabled={!this.props.conn.isConnected || !this.props.cart.viewCart}
-              style={{backgroundColor: !this.props.cart.viewCart ? this.state.buttonGrey : this.state.buttonBlue, marginLeft: 5, height: this.state.footerButtonHeight, marginRight: 5}}>
+              disabled={!this.props.conn.isConnected}
+              style={{backgroundColor: this.state.buttonBlue, marginLeft: 5, height: this.state.footerButtonHeight, marginRight: 5}}>
               <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
                 <Icon style={{fontSize: 35}} color='white' name='ios-cart-outline' />
                 <Text style={{textAlign: 'center', color: 'white'}}>View Cart</Text>

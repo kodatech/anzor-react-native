@@ -6,7 +6,7 @@ import {connect} from 'react-redux'
 import {checkIfLoggedOn, changeViewCartStatus} from '../../actions'
 import { URI } from '../../actions/configuration'
 // console.log(URI)
-import Spinnera from '../loaders/Spinnera'
+import SpinnerList from '../loaders/SpinnerList'
 
 
 const WEBVIEW_REF = 'WEBVIEW_REF'
@@ -25,7 +25,7 @@ class CartScene extends Component {
 
   renderLoading() {
     // return <Spinner color='#0083a9' style={{height: 400}} />
-    return <Spinnera />
+    return <SpinnerList />
   }
 
   onNavigationStateChange(navState) {

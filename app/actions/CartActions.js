@@ -41,7 +41,7 @@ export const clearList = () => {
 export const qtyChangeFromProduct = (text) => {
   return (dispatch, getState) => {
     let state = getState()
-    console.log(state)
+    // console.log(state)
     let product = state.cart.product[0]
     product.quantity = text
     product.totalline = parseFloat(parseFloat(product.sell_price_1) * parseInt(text)).toFixed(4)
@@ -369,6 +369,11 @@ export const addQtyNewProduct = (barCodeScannedValue) => {
       .then((response) => response.json())
       .then((responseJson) => {
         if (typeof (responseJson) === 'object') {
+          if (responseJson[0].quantity > 1) {
+            responseJson[0].isKanban = true
+          } else {
+            responseJson[0].isKanban = false
+          }
           // console.log(responseJson[0])
           dispatch({
             type: GET_PRODUCT_FOR_QTY,
@@ -380,13 +385,19 @@ export const addQtyNewProduct = (barCodeScannedValue) => {
           })
         }
       })
+      .catch((error) => {
+        console.log(error)
+        dispatch({
+          type: STORE_PRODUCT_FAIL
+        })
+      })
   }
 }
 
 export const addNewProduct = () => {
   return async (dispatch, getState) => {
     let state = getState()
-    console.log(state)
+    // console.log(state)
     dispatch({type: ADD_NEW_PRODUCT})
     barCodeScannedValue = state.cart.product[0].barcode
     let responseJson = state.cart.product

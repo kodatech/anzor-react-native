@@ -5,7 +5,7 @@ import { checkIfLoggedOn } from '../actions'
 
 import { Input, Spinner } from 'native-base'
 
-import Spinnerb from './loaders/Spinnerd'
+import SpinnerWelcome from './loaders/SpinnerWelcome'
 
 class WelcomeScene extends Component {
 
@@ -24,7 +24,7 @@ class WelcomeScene extends Component {
     // }
     return (
       <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', backgroundColor: 'black'}}>
-        <Spinnerb />
+        <SpinnerWelcome />
       </View>
     )
   }

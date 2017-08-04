@@ -13,6 +13,8 @@ import {addQtyNewProduct, checkIfLoggedOn} from '../actions'
 import {Actions} from 'react-native-router-flux'
 import {Button} from 'native-base'
 import Camera from 'react-native-camera'
+// import SpinnerCamera from './loaders/SpinnerCamera'
+
 
 const timer = require('react-native-timer')
 
@@ -38,17 +40,23 @@ class ScanScene extends Component {
       heightBetweenAngles: Dimensions.get('window').height / 4.5,
       widthBetweenAngles: Dimensions.get('window').width / 2.5,
       angleSize: Dimensions.get('window').height / 15,
+      testloading: true
     }
 
-    this._handleBarCodeRead = this._handleBarCodeRead.bind(this)
+    // this._handleBarCodeRead = this._handleBarCodeRead.bind(this)
   }
 
   componentDidMount () {
     this.props.checkIfLoggedOn('scanScene')
+    // setTimeout(() => {
+    //   this.setState({
+    //     testloading: false
+    //   })
+    // }, 1000)
   }
 
   componentWillUnmount () {
-    // clearTimeout(this.timer)
+    // this._handleBarCodeReadWithButton.bind(this)
     timer.clearTimeout(this)
   }
 
@@ -92,7 +100,7 @@ class ScanScene extends Component {
         focusStatus: false,
         barCodeScannedValue: null,
         barCodeScannedType: null
-      }), 5000
+      }), 3000
     ))
     this._setScanning(true)
     this._setBarCodeScanned(e)
@@ -105,13 +113,13 @@ class ScanScene extends Component {
     })
   }
 
-  _handleBarCodeRead (e) {
-    if (!this.state.scanning) {
-      Vibration.vibrate()
-      this._setFocusStatus(true)
-      this._setScanning(true)
-    }
-  }
+  // _handleBarCodeRead (e) {
+  //   if (!this.state.scanning) {
+  //     Vibration.vibrate()
+  //     this._setFocusStatus(true)
+  //     this._setScanning(true)
+  //   }
+  // }
 
   _setFocusStatus (value) {
     this.setState({ focusStatus: value })
@@ -139,6 +147,7 @@ class ScanScene extends Component {
     if (this.state.barCodeScannedValue) {
       this.props.addQtyNewProduct(this.state.barCodeScannedValue)
       this._setFocusStatus(false)
+      this._reset()
       Actions.qtyScene()
     } else {
       this.props.addQtyNewProduct('')
@@ -201,6 +210,11 @@ class ScanScene extends Component {
   }
 
   render () {
+    // if (this.state.testloading) {
+    //   return (
+    //     <SpinnerCamera />
+    //   )
+    // }
     return (
       <View style={{height: this.state.screenHeight, backgroundColor: 'transparent'}} onLayout={this.getNewDimensions.bind(this)}>
         <View style={styles.mainContainer}>
