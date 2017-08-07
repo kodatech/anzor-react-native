@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {WebView, Text, View, TouchableOpacity, StyleSheet} from 'react-native'
+import {WebView, Text, View, TouchableOpacity, StyleSheet, BackHandler} from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import {Spinner, Icon} from 'native-base'
 import {connect} from 'react-redux'
@@ -14,6 +14,16 @@ class HomeScene extends Component {
   constructor(props) {
     super(props)
     this.state = { canGoBack: false }
+    BackHandler.addEventListener('hardwareBackPress', function() {
+     // this.onMainScreen and this.goBack are just examples, you need to use your own implementation here
+     // Typically you would use the navigator here to go to the last state.
+      // BackHandler.exitApp()
+      // if (!this.onMainScreen()) {
+      //   this.goBack()
+      //   return true
+      // }
+      return true
+    })
   }
 
   renderLoading() {

@@ -3,7 +3,7 @@ import { Container, Content, Form, Item, Input, Label, Button, Text, Spinner, Ch
 import {Actions} from 'react-native-router-flux'
 import { Dimensions, Image, View, TouchableOpacity, TextInput, TouchableWithoutFeedback } from 'react-native'
 import {connect} from 'react-redux'
-import {emailChanged, passwordChanged, loginUser} from '../actions'
+import {emailChanged, passwordChanged, loginUser, rememberMe, checkIfRemember} from '../actions'
 
 const styles = {
   containerStyle: {
@@ -21,11 +21,20 @@ class LoginScene extends Component {
     super(props)
     this.state = {
       loading: false,
-      rememberMe: false,
+      // rememberMe: false,
+      checked: false,
       passwordDisplayed: false,
       mdEye: 'md-eye-off',
       elementsHeight: Dimensions.get('window').height / 13
     }
+  }
+
+  componentDidMount () {
+    this.props.rememberMe(true)
+  }
+
+  componentWillMount () {
+    this.props.checkIfRemember()
   }
 
   toggleDisplay () {
@@ -41,6 +50,11 @@ class LoginScene extends Component {
       width: Dimensions.get('window').width,
       elementsHeight: Dimensions.get('window').height / 13
     })
+  }
+
+  rememberMeCheck () {
+    this.props.rememberMe(this.state.checked)
+    console.log(this.state.checked)
   }
 
   onPasswordChange (text) {
@@ -127,14 +141,16 @@ class LoginScene extends Component {
           </TouchableWithoutFeedback>
         </View>
         <View style={{height: this.state.elementsHeight, flexDirection: 'row', justifyContent: 'center', padding: 20}}>
-
-          <TouchableWithoutFeedback
-            style={{alignItems: 'center'}}
-            onPress={() => this.setState({
-              checked: !this.state.checked
-            })}>
-            <Icon name='md-checkbox' style={{color: '#FFFFFF', backgroundColor: '#000000', position: 'absolute', top: 20, right: 200}} />
-          </TouchableWithoutFeedback>
+          <TouchableOpacity
+            onPress={() => {
+              this.setState({
+                checked: !this.state.checked
+              })
+              this.rememberMeCheck()
+            }}
+            style={{height: 25, width: 25, backgroundColor: '#0083a9', alignItems: 'center'}}>
+            <Icon name='md-checkmark' style={{color: !this.state.checked ? '#FFFFFF' : '#0083a9', backgroundColor: '#0083a9', position: 'absolute', top: -2, right: 2}} />
+          </TouchableOpacity>
           <Text style={{height: 25, color: '#FFFFFF', fontSize: 15, textAlign: 'center', textAlignVertical: 'center', paddingLeft: 20, paddingBottom: 3, paddingTop: 3}}>Remember Me</Text>
         </View>
         {this.renderButton()}
@@ -153,43 +169,15 @@ class LoginScene extends Component {
     )
   }
 
-  // <View onPress={this.goToSignUp.bind(this)}>
-  // </View>
+  // <TouchableWithoutFeedback
+  //   style={{alignItems: 'center', backgroundColor: '#0083a9'}}
+  //   onPress={() => this.setState({
+  //     checked: !this.state.checked
+  //   })}>
+  //   <Icon name='md-checkmark' style={{color: '#FFFFFF', backgroundColor: !this.state.checked ? '#000000' : '#FFFFFF', position: 'absolute', top: 20, right: 200}} />
+  // </TouchableWithoutFeedback>
+  // <Text style={{height: 25, color: '#FFFFFF', fontSize: 15, textAlign: 'center', textAlignVertical: 'center', paddingLeft: 20, paddingBottom: 3, paddingTop: 3}}>Remember Me</Text>
 
-
-  // renderScene () {
-  //   if (this.state.loading) {
-  //     return <Spinner color='#0083a9' style={{height: 400}} />
-  //   }
-  //   return (
-  //     <View style={{backgroundColor: 'black'}} onLayout={this.getNewDimensions.bind(this)}>
-  //       <Form style={{justifyContent: 'center', alignItems: 'center', marginTop: 10, backgroundColor: 'black', width: this.state.width, height: this.state.height}}>
-  //         <Item style={{width: this.state.width / 1.2, backgroundColor: 'white'}}>
-  //           <Input
-  //             placeholder='Username'
-  //             style={{height: 45, textAlign: 'center'}}
-  //             onChangeText={this.onEmailChange.bind(this)}
-  //             value={this.props.email} />
-  //         </Item>
-  //         <Item style={{width: this.state.width / 1.2, backgroundColor: 'white', marginTop: 15}}>
-  //           <Input
-  //             placeholder='Password'
-  //             style={{height: 45, textAlign: 'center'}}
-  //             onChangeText={this.onPasswordChange.bind(this)}
-  //             value={this.props.password}
-  //             secureTextEntry />
-  //         </Item>
-  //         {this.renderButton()}
-  //         <Button disabled style={{width: this.state.width / 1.2, marginTop: 15, backgroundColor: '#0083a9', marginLeft: this.state.width / 9.5}}>
-  //           <Text style={{flex: 1, justifyContent: 'center', textAlign: 'center'}}> Forgot Password? </Text>
-  //         </Button>
-  //         <Text style={{color: '#FFFFFF', marginTop: 25}}>{this.props.error}</Text>
-  //         <Text style={{color: '#FFFFFF', marginTop: 25}}>Dont have a login</Text>
-  //         <Text style={{color: '#FFFFFF'}}>Click here to Sign Up</Text>
-  //       </Form>
-  //     </View>
-  //   )
-  // }
 
   render () {
     return (
@@ -223,4 +211,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, {emailChanged, passwordChanged, loginUser})(LoginScene)
+export default connect(mapStateToProps, {emailChanged, passwordChanged, loginUser, rememberMe, checkIfRemember})(LoginScene)

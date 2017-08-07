@@ -36,3 +36,9 @@ export const LOG_OUT = 'logged_out'
 
 export const EMAIL_CHANGED = 'email_changed'
 export const PASSWORD_CHANGED = 'password_changed'
+
+export const REMEMBER_ME = 'remember_me'
+export const REMOVE_FROM_DEVICE = 'remove_from_device'
+export const CHECK_IF_REMEMBER = 'check_if_remember'
+export const CHECK_IF_REMEMBER_SUCCESS = 'check_if_remember_success'
+export const CHECK_IF_REMEMBER_FAIL = 'check_if_remember_fail'

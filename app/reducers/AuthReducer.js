@@ -9,7 +9,12 @@ import {
   LOGGED_ON_FAIL,
   LOG_OUT,
   EMAIL_CHANGED,
-  PASSWORD_CHANGED
+  PASSWORD_CHANGED,
+  REMEMBER_ME,
+  REMOVE_FROM_DEVICE,
+  CHECK_IF_REMEMBER,
+  CHECK_IF_REMEMBER_SUCCESS,
+  CHECK_IF_REMEMBER_FAIL
 } from '../actions/types'
 
 const INITIAL_STATE = {
@@ -17,6 +22,7 @@ const INITIAL_STATE = {
   // password: '123456',
   email: '',
   password: '',
+  rememberMe: true,
   loading: false,
   error: '',
   user: null,
@@ -26,6 +32,14 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE, action) => {
   // console.log(action)
   switch (action.type) {
+    case CHECK_IF_REMEMBER:
+      return { ...state, loading: action.payload }
+    case CHECK_IF_REMEMBER_SUCCESS:
+      return { ...state, loading: action.payload, email: action.email, password: action.password }
+    case CHECK_IF_REMEMBER_FAIL:
+      return { ...state, loading: action.payload, email: action.email, password: action.password }
+    case REMEMBER_ME:
+      return { ...state, rememberMe: action.payload }
     case EMAIL_CHANGED:
       return { ...state, email: action.payload, error: '' }
     case PASSWORD_CHANGED:
@@ -43,6 +57,8 @@ export default (state = INITIAL_STATE, action) => {
     case LOGGED_ON_FAIL:
       return { ...state, ...INITIAL_STATE }
     case LOG_OUT:
+      return { ...state }
+    case REMOVE_FROM_DEVICE:
       return { ...state, ...INITIAL_STATE }
     default:
       return state

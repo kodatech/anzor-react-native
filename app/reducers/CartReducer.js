@@ -67,6 +67,7 @@ export default (state = INITIAL_STATE, action) => {
         list: action.payload,
         totalOrder: action.totalOrder,
         loading: false,
+        upToCart: false,
         // viewCart: false
         message: 'Great! Your products have been uploaded to your cart. ',
         // arrow: '↓'

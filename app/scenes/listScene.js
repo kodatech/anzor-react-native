@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {Actions} from 'react-native-router-flux'
 import {Container, Content, Header, Button, Text, Left, Right, Footer, FooterTab, List, Body, ActionSheet, Spinner, Input, Icon, ListItem} from 'native-base'
-import {Dimensions, StyleSheet, AsyncStorage, View, NetInfo, Networking, TouchableWithoutFeedback, ListView, TextInput} from 'react-native'
+import {Dimensions, StyleSheet, AsyncStorage, View, NetInfo, Networking, TouchableWithoutFeedback, ListView, TextInput, BackHandler} from 'react-native'
 import {connect} from 'react-redux'
 import {getCartList, qtyChanged, clearList, deleteProduct, setIsConnected, checkOut, checkIfLoggedOn, logOut} from '../actions'
 import {ConfirmModalScene} from './confirmModalScene'
@@ -32,6 +32,17 @@ class ListScene extends Component {
       showModal: false,
       testloading: true
     }
+    BackHandler.addEventListener('hardwareBackPress', function() {
+     // this.onMainScreen and this.goBack are just examples, you need to use your own implementation here
+     // Typically you would use the navigator here to go to the last state.
+      // BackHandler.exitApp()
+      // if (!this.onMainScreen()) {
+      //   this.goBack()
+      //   return true
+      // }
+      Actions.pop()
+      return true
+    })
   }
 
   async componentWillMount () {
