@@ -15,8 +15,25 @@ import {
   REMOVE_FROM_DEVICE,
   CHECK_IF_REMEMBER,
   CHECK_IF_REMEMBER_SUCCESS,
-  CHECK_IF_REMEMBER_FAIL
+  CHECK_IF_REMEMBER_FAIL,
+  GET_USER,
+  GET_USER_SUCCESS
 } from './types'
+
+
+export const getUser = () => {
+  return (dispatch) => {
+    // return (dispatch) => {
+    dispatch({type: GET_USER, payload: true})
+    AsyncStorage.getItem('email').then(email => {
+      if (email != null) {
+        email = email.substr(1)
+        email = email.substr(0, email.length - 1)
+        dispatch({type: GET_USER_SUCCESS, payload: false, email: email})
+      }
+    })
+  }
+}
 
 export const removeFromDevice = () => {
   return (dispatch) => {

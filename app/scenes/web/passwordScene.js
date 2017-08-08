@@ -49,7 +49,7 @@ class PasswordScene extends Component {
           ref={WEBVIEW_REF}
           style={{flex: 1}}
           // source={{uri: ADDRESS}}
-          source={{uri: 'http://www.anzor.co.nz/user/password'}}
+          source={{uri: `${ADDRESS}user/password`}}
           renderLoading={this.renderLoading}
           // onShouldStartLoadWithRequest={this.openExternalLink}
           onNavigationStateChange={this.onNavigationStateChange.bind(this)}

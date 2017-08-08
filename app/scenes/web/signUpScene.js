@@ -49,7 +49,7 @@ class SignUpScene extends Component {
           ref={WEBVIEW_REF}
           style={{flex: 1}}
           // source={{uri: ADDRESS}}
-          source={{uri: 'http://www.anzor.co.nz/request_web_login'}}
+          source={{uri: `${ADDRESS}request_web_login`}}
           renderLoading={this.renderLoading}
           // onShouldStartLoadWithRequest={this.openExternalLink}
           onNavigationStateChange={this.onNavigationStateChange.bind(this)}

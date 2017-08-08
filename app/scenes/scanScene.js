@@ -94,7 +94,7 @@ class ScanScene extends Component {
     // let clearId = setTimeout(() => {
     //   this._reset()
     // }, 5000)
-    // Vibration.vibrate()
+    Vibration.vibrate([100, 50], false)
     this.setState({ focusStatus: true }, () => timer.setTimeout(
       this, '_reset', () => this.setState({
         focusStatus: false,

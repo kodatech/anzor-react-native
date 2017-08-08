@@ -14,7 +14,9 @@ import {
   REMOVE_FROM_DEVICE,
   CHECK_IF_REMEMBER,
   CHECK_IF_REMEMBER_SUCCESS,
-  CHECK_IF_REMEMBER_FAIL
+  CHECK_IF_REMEMBER_FAIL,
+  GET_USER,
+  GET_USER_SUCCESS
 } from '../actions/types'
 
 const INITIAL_STATE = {
@@ -32,6 +34,10 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE, action) => {
   // console.log(action)
   switch (action.type) {
+    case GET_USER:
+      return { ...state, loading: action.payload }
+    case GET_USER_SUCCESS:
+      return { ...state, loading: action.payload, email: action.email }
     case CHECK_IF_REMEMBER:
       return { ...state, loading: action.payload }
     case CHECK_IF_REMEMBER_SUCCESS:

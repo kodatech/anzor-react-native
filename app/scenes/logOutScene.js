@@ -3,7 +3,7 @@ import { Container, Content, Form, Item, Input, Label, Button, Text, Spinner, Ch
 import {Actions} from 'react-native-router-flux'
 import { Dimensions, Image, View, TouchableOpacity, TextInput, TouchableWithoutFeedback } from 'react-native'
 import {connect} from 'react-redux'
-import {emailChanged, passwordChanged, loginUser, removeFromDevice} from '../actions'
+import {removeFromDevice, getUser} from '../actions'
 
 const styles = {
   containerStyle: {
@@ -21,18 +21,12 @@ class LogOutScene extends Component {
     super(props)
     this.state = {
       loading: false,
-      rememberMe: false,
-      passwordDisplayed: false,
-      mdEye: 'md-eye-offf',
       elementsHeight: Dimensions.get('window').height / 10
     }
   }
 
-  toggleDisplay () {
-    this.setState({
-      passwordDisplayed: !this.state.passwordDisplayed,
-      mdEye: this.state.passwordDisplayed ? 'md-eye-off' : 'md-eye'
-    })
+  componentWillMount () {
+    this.props.getUser()
   }
 
   getNewDimensions () {
@@ -43,33 +37,6 @@ class LogOutScene extends Component {
     })
   }
 
-  onPasswordChange (text) {
-    this.props.passwordChanged(text)
-  }
-
-  onEmailChange (text) {
-    this.props.emailChanged(text)
-  }
-
-  goToSignUp () {
-    // console.log('goToSignUp')
-    Actions.signUpScene()
-  }
-
-  goToForgotPassword () {
-    Actions.passwordScene()
-  }
-
-  onButtonPress () {
-    // const {email, password} = this.props
-    // this.setState({ loading: true })
-    this.props.loginUser(this.props.email, this.props.password)
-    // Actions.listScene()
-    // setTimeout(() => {
-    //   this.setState({ loading: false })
-    //   Actions.listScene()
-    // }, 3000)
-  }
   bottomOptions() {
     const BUTTONS = [
       'Remove account from device',
@@ -126,13 +93,12 @@ class LogOutScene extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log(state)
+  // console.log(state)
   return {
     email: state.auth.email,
-    password: state.auth.password,
     error: state.auth.error,
     loading: state.auth.loading
   }
 }
 
-export default connect(mapStateToProps, {emailChanged, passwordChanged, loginUser, removeFromDevice})(LogOutScene)
+export default connect(mapStateToProps, {removeFromDevice, getUser})(LogOutScene)
