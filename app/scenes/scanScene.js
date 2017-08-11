@@ -48,6 +48,8 @@ class ScanScene extends Component {
 
   componentDidMount () {
     this.props.checkIfLoggedOn('scanScene')
+    this._setFocusStatus(false)
+    this._reset()
     // setTimeout(() => {
     //   this.setState({
     //     testloading: false
@@ -94,7 +96,7 @@ class ScanScene extends Component {
     // let clearId = setTimeout(() => {
     //   this._reset()
     // }, 5000)
-    Vibration.vibrate([100, 50], false)
+    // Vibration.vibrate([100, 50], false)
     this.setState({ focusStatus: true }, () => timer.setTimeout(
       this, '_reset', () => this.setState({
         focusStatus: false,

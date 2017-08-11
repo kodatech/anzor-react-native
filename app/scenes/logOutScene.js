@@ -21,7 +21,12 @@ class LogOutScene extends Component {
     super(props)
     this.state = {
       loading: false,
-      elementsHeight: Dimensions.get('window').height / 10
+      elementsHeight: Dimensions.get('window').height / 10,
+      iconSize: Dimensions.get('window').height / 17,
+      top: Dimensions.get('window').height / 65,
+      left: Dimensions.get('window').height / 65,
+      fiftheen: Dimensions.get('window').height / 45,
+      fifty: Dimensions.get('window').height / 13
     }
   }
 
@@ -33,8 +38,14 @@ class LogOutScene extends Component {
     this.setState({
       header: Dimensions.get('window').height,
       width: Dimensions.get('window').width,
-      elementsHeight: Dimensions.get('window').height / 10
+      elementsHeight: Dimensions.get('window').height / 10,
+      iconSize: Dimensions.get('window').height / 17,
+      top: Dimensions.get('window').height / 65,
+      left: Dimensions.get('window').height / 65,
+      fiftheen: Dimensions.get('window').height / 45,
+      fifty: Dimensions.get('window').height / 13
     })
+    console.log(Dimensions.get('window').height / 13)
   }
 
   bottomOptions() {
@@ -59,24 +70,28 @@ class LogOutScene extends Component {
       }
       )
   }
+
+  //           <Image source={require('../resources/user.png')} style={{position: 'absolute', top: 15, right: 265, width: 30, height: 30}} />
+
   renderScene () {
     if (this.state.loading) {
       return <Spinner color='#0083a9' style={{height: 400}} />
     }
     return (
       <View style={{backgroundColor: 'black', flexDirection: 'column', justifyContent: 'space-around', paddingTop: 100}} onLayout={this.getNewDimensions.bind(this)}>
-        <Text style={{color: '#FFFFFF', fontSize: 15, textAlign: 'left', textAlignVertical: 'center', marginTop: 15, paddingBottom: 15}}>Tap to log in</Text>
+        <Text style={{color: '#FFFFFF', fontSize: this.state.fiftheen, textAlign: 'left', textAlignVertical: 'center', marginTop: this.state.fiftheen, paddingBottom: this.state.fiftheen}}>Tap to log in</Text>
         <TouchableOpacity
           onPress={Actions.loginScene}
-          style={{height: this.state.elementsHeight, width: this.state.width / 1.2, backgroundColor: '#0083a9', alignItems: 'center', marginTop: 15}}>
-          <Image source={require('../resources/user.png')} style={{position: 'absolute', top: 10, right: 255, width: 40, height: 40}} />
-          <Text style={{color: '#FFFFFF', fontSize: 15, textAlign: 'center', textAlignVertical: 'center', padding: 20}}> User name </Text>
+          style={{height: this.state.elementsHeight, width: this.state.width / 1.2, backgroundColor: '#0083a9', alignItems: 'center', marginTop: this.state.fiftheen}}>
+          <Icon style={{fontSize: this.state.iconSize, top: this.state.top, left: this.state.left, position: 'absolute', color: '#e6ffff'}} name='md-person' />
+          <Text style={{color: '#FFFFFF', fontSize: this.state.fiftheen - 2, textAlign: 'center', textAlignVertical: 'center', paddingTop: this.state.fiftheen + 10, paddingLeft: 5}}> {this.props.email} </Text>
           <TouchableWithoutFeedback
-            onPress={this.bottomOptions.bind(this)}>
-            <Image source={require('../resources/mark_vertical.png')} style={{position: 'absolute', top: 15, right: 5, width: 30, height: 30}} />
+            onPress={this.bottomOptions.bind(this)}
+            style={{width: this.state.fifty, height: this.state.fifty, position: 'absolute', top: this.state.fiftheen + 5}}>
+            <Icon name='md-menu' style={{color: '#FFFFFF', position: 'absolute', top: this.state.top, right: this.state.fiftheen + 5, width: 3, fontSize: this.state.iconSize + 5}} />
           </TouchableWithoutFeedback>
         </TouchableOpacity>
-        <Text style={{color: '#FFFFFF', fontSize: 15, textAlign: 'center', textAlignVertical: 'center', marginTop: 15, paddingBottom: 15}}>{this.props.error}</Text>
+        <Text style={{color: '#FFFFFF', fontSize: this.state.fiftheen, textAlign: 'center', textAlignVertical: 'center', marginTop: this.state.fiftheen, paddingBottom: this.state.fiftheen}}>{this.props.error}</Text>
       </View>
     )
   }
@@ -85,7 +100,7 @@ class LogOutScene extends Component {
     return (
       <View style={styles.containerStyle}>
         <Image source={require('../resources/logo2.png')} />
-        <Text style={{padding: 20, fontSize: 25, color: '#FFFFFF'}}>Barcode Scanner</Text>
+        <Text style={{padding: this.state.fiftheen + 5, fontSize: this.state.fiftheen, color: '#FFFFFF'}}>Barcode Scanner</Text>
         {this.renderScene()}
       </View>
     )

@@ -45,3 +45,5 @@ export const CHECK_IF_REMEMBER_FAIL = 'check_if_remember_fail'
 
 export const GET_USER = 'get_user'
 export const GET_USER_SUCCESS = 'get_user_success'
+
+export const DISCARD_PRODUCT = 'discard_product'

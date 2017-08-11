@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {AsyncStorage, NetInfo, BackHandler} from 'react-native'
+import {AsyncStorage, BackHandler} from 'react-native'
 import {Spinner, Root} from 'native-base'
 import {ActionConst, Scene, Router} from 'react-native-router-flux'
 

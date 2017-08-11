@@ -175,6 +175,9 @@ export const checkIfLoggedOn = (scene, dispatch) => {
                     loggedOnFail(dispatch)
                   }
                 })
+                .catch(() => {
+                  loggedOnFail(dispatch)
+                })
                 // loggedOnSuccess(dispatch, user, '7067', email, pass, scene)
               })
             })

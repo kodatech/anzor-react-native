@@ -19,7 +19,8 @@ import {
   STORE_PRODUCT_FAIL,
   CART_NO_CONNECTED,
   GET_PRODUCT_FOR_QTY,
-  QTY_CHANGED_FROM_PRODUCT
+  QTY_CHANGED_FROM_PRODUCT,
+  DISCARD_PRODUCT
 } from '../actions/types'
 
 const INITIAL_STATE = {
@@ -37,6 +38,8 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE, action) => {
   // console.log(action)
   switch (action.type) {
+    case DISCARD_PRODUCT:
+      return { ...state, product: action.payload }
     case QTY_CHANGED_FROM_PRODUCT:
       return { ...state, product: action.payload }
     case QTY_CHANGED_SUCCESS:

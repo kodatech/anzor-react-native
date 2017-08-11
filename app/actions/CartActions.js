@@ -21,7 +21,8 @@ import {
   CART_NO_CONNECTED,
   LOGGED_ON_FAIL,
   GET_PRODUCT_FOR_QTY,
-  QTY_CHANGED_FROM_PRODUCT
+  QTY_CHANGED_FROM_PRODUCT,
+  DISCARD_PRODUCT
 } from './types'
 
 export const clearList = () => {
@@ -36,6 +37,15 @@ export const clearList = () => {
     upToCart: false,
     totalOrder: 0
   })
+}
+
+export const discardProduct = () => {
+  return (dispatch) => {
+    return ({
+      type: DISCARD_PRODUCT,
+      payload: []
+    })
+  }
 }
 
 export const qtyChangeFromProduct = (text) => {

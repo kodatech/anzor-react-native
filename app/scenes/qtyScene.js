@@ -10,8 +10,9 @@ import {
   TouchableWithoutFeedback
   // Keyboard
 } from 'react-native'
+import { Spinner } from 'native-base'
 import {connect} from 'react-redux'
-import {addNewProduct, qtyChangeFromProduct, checkIfLoggedOn} from '../actions'
+import {addNewProduct, qtyChangeFromProduct, checkIfLoggedOn, discardProduct} from '../actions'
 import {Actions} from 'react-native-router-flux'
 
 import SpinnerQty from './loaders/SpinnerQty'
@@ -19,13 +20,7 @@ import SpinnerQty from './loaders/SpinnerQty'
 
 class QtyScene extends Component {
 
-  // componentWillUnmount () {
-  //   Keyboard.dismiss()
-  // }
-
   addNewProduct (text) {
-    // console.log(this.props.cart)
-    // let barcode = this.props.cart.product
     this.props.addNewProduct()
   }
 
@@ -39,8 +34,29 @@ class QtyScene extends Component {
     }
   }
 
-  scanScene () {
+  discardProduct () {
+    // console.log(this.props.cart)
+    this.props.discardProduct()
     Actions.scanScene({type: 'reset'})
+  }
+
+  renderButton () {
+    if (this.props.loading) {
+      return (
+        <TouchableOpacity
+          style={{paddingBottom: 0, height: 80, width: 200, backgroundColor: '#000000', alignItems: 'center'}}
+          onPress={this.addNewProduct.bind(this)}>
+          <Spinner color='#FFFFFF' style={{height: 400, justifyContent: 'center', flex: 1}} />
+        </TouchableOpacity>
+      )
+    }
+    return (
+      <TouchableOpacity
+        style={{paddingBottom: 0, height: 80, width: 200, backgroundColor: '#000000', alignItems: 'center'}}
+        onPress={this.addNewProduct.bind(this)}>
+        <Text style={{color: '#FFFFFF', fontSize: 25, textAlign: 'center', textAlignVertical: 'center', padding: 20}}>Add Quantity</Text>
+      </TouchableOpacity>
+    )
   }
 
   render () {
@@ -55,7 +71,7 @@ class QtyScene extends Component {
       return (
         <View style={{flex: 1, flexDirection: 'column', justifyContent: 'space-around', backgroundColor: '#0083a9', alignContent: 'center', alignItems: 'center'}}>
           <TouchableWithoutFeedback style={{width: 40, height: 40}}
-            onPress={this.scanScene.bind(this)}>
+            onPress={this.discardProduct.bind(this)}>
             <View>
               <Text style={{color: '#FFFFFF', fontSize: 30, textAlign: 'right', paddingLeft: 280, fontWeight: 'bold'}}>X</Text>
             </View>
@@ -63,7 +79,7 @@ class QtyScene extends Component {
           <View>
             <Text style={{color: '#FFFFFF', fontSize: 25, textAlign: 'center'}}>Type in quantity for:</Text>
           </View>
-          <View><Text style={{color: '#000000', fontSize: 25, textAlign: 'center'}}>{this.props.product[0].description}</Text></View>
+          <View><Text style={{color: '#000000', fontSize: 25, textAlign: 'center', padding: 40}}>{this.props.product[0].description}</Text></View>
           <View style={{paddingBottom: 0, justifyContent: 'center', alignContent: 'center', flexDirection: 'row'}}>
             <TextInput
               style={{height: 80, borderColor: 'gray', borderWidth: 1, backgroundColor: '#FFFFFF', fontSize: 45, width: 200, textAlign: 'center'}}
@@ -78,11 +94,7 @@ class QtyScene extends Component {
           </View>
           <Text style={{color: '#b3ff66', fontSize: 25, textAlign: 'center'}}>{this.isKanbanItem()}</Text>
           <View style={{marginBottom: 0, justifyContent: 'center', alignContent: 'center', flexDirection: 'row'}}>
-            <TouchableOpacity
-              style={{paddingBottom: 0, height: 80, width: 200, backgroundColor: '#000000', alignItems: 'center'}}
-              onPress={this.addNewProduct.bind(this)}>
-              <Text style={{color: '#FFFFFF', fontSize: 25, textAlign: 'center', textAlignVertical: 'center', padding: 20}}>Add Quantity</Text>
-            </TouchableOpacity>
+            {this.renderButton()}
           </View>
         </View>
       )
@@ -91,11 +103,13 @@ class QtyScene extends Component {
 }
 
 const mapStateToProps = state => {
+  console.log(state)
   return {
     cart: state.cart,
     conn: state.conn,
-    product: state.cart.product
+    product: state.cart.product,
+    loading: state.cart.loading
   }
 }
 
-export default connect(mapStateToProps, {addNewProduct, qtyChangeFromProduct, checkIfLoggedOn})(QtyScene)
+export default connect(mapStateToProps, {addNewProduct, qtyChangeFromProduct, checkIfLoggedOn, discardProduct})(QtyScene)

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {Actions} from 'react-native-router-flux'
 import {Container, Content, Header, Button, Text, Left, Right, Footer, FooterTab, List, Body, ActionSheet, Spinner, Input, Icon, ListItem} from 'native-base'
-import {Dimensions, StyleSheet, AsyncStorage, View, NetInfo, Networking, TouchableWithoutFeedback, ListView, TextInput, BackHandler} from 'react-native'
+import {Dimensions, StyleSheet, AsyncStorage, View, NetInfo, TouchableWithoutFeedback, ListView, TextInput, BackHandler} from 'react-native'
 import {connect} from 'react-redux'
 import {getCartList, qtyChanged, clearList, deleteProduct, setIsConnected, checkOut, checkIfLoggedOn, logOut} from '../actions'
 import {ConfirmModalScene} from './confirmModalScene'
@@ -27,6 +27,8 @@ class ListScene extends Component {
       widthDescription: Dimensions.get('window').width / 1.3,
       stringHeight: Dimensions.get('window').height / 25,
       arrowHeight: Dimensions.get('window').height / 8,
+      hundred: Dimensions.get('window').height / 6.5,
+      ten: Dimensions.get('window').height / 60,
       buttonBlue: '#0083a9',
       buttonGrey: '#D3D3D3',
       showModal: false,
@@ -89,10 +91,10 @@ class ListScene extends Component {
           this.props.setIsConnected(false)
         })
     }
-    NetInfo.isConnected.fetch().then(() => {
-      NetInfo.isConnected.addEventListener('change', dispatchConnected)
-    })
-
+    NetInfo.isConnected.fetch()
+      .then(() => {
+        NetInfo.isConnected.addEventListener('change', dispatchConnected)
+      })
   }
 
   onQtyChange = (id, text) => {
@@ -123,9 +125,11 @@ class ListScene extends Component {
       footerButtonHeight: Dimensions.get('window').height / 7,
       widthDescription: Dimensions.get('window').width / 1.3,
       stringHeight: Dimensions.get('window').height / 25,
-      arrowHeight: Dimensions.get('window').height / 8
+      arrowHeight: Dimensions.get('window').height / 8,
+      hundred: Dimensions.get('window').height / 6.5,
+      ten: Dimensions.get('window').height / 60
     })
-
+    // console.log(this.state.ten)
   }
 
   renderRow(item) {
@@ -177,8 +181,8 @@ class ListScene extends Component {
     if (!this.props.conn.isConnected) {
       return (
         <Content style={{flex: 1, flexDirection: 'column'}}>
-          <Icon style={{fontSize: 100, marginLeft: 130, marginTop: 100, color: 'gray'}} name='md-cloud-outline' />
-          <Text style={{fontSize: 10, marginLeft: 125, paddingTop: 10, color: 'gray'}}>No Internet Connection</Text>
+          <Icon style={{fontSize: this.state.hundred, marginLeft: this.state.hundred + 30, marginTop: this.state.hundred, color: 'gray'}} name='md-cloud-outline' />
+          <Text style={{fontSize: this.state.ten, marginLeft: this.state.hundred + 25, paddingTop: this.state.ten, color: 'gray'}}>No Internet Connection</Text>
         </Content>
       )
     }
@@ -209,7 +213,7 @@ class ListScene extends Component {
                       </View>
                       <Text note>{item.stockcode}</Text>
                       <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignContent: 'flex-start'}}>
-                        <Text style={{textAlignVertical: 'center', width: 25}}>Qty</Text>
+                        <Text style={{textAlignVertical: 'center', width: 35}}>Qty</Text>
                         <View style={{padding: 0, backgroundColor: 'transparent', flex: 1, borderColor: 'grey', borderWidth: 1, height: 30, alignContent: 'center'}}>
                           <Input name={item.code} defaultValue={item.value.toString()}
                             // onEndEditing={
@@ -221,7 +225,7 @@ class ListScene extends Component {
                                 this.onQtyChange(item.code, e.nativeEvent.text)
                               }
                             }
-                            keyboardType='numeric' editable style={{padding: 3}} />
+                            keyboardType='numeric' editable style={{padding: 3, width: 100, color: '#000000', height: 30}} />
                         </View>
                         <Text style={{textAlignVertical: 'center', width: 10, marginLeft: 1}}>x</Text>
                         <Text style={{textAlignVertical: 'center', width: 10, paddingLeft: 1, marginLeft: 1}}>$</Text>
@@ -276,20 +280,20 @@ class ListScene extends Component {
 
     return (
       <Container style={{flex: 1, flexDirection: 'column', justifyContent: 'space-between'}} onLayout={this.getNewDimensions.bind(this)}>
-        <Header style={{backgroundColor: '#0083a9', height: this.state.headerButtonHeight + 20, paddingTop: 10, paddingBottom: 10, elevation: 0}}>
+        <Header style={{backgroundColor: '#0083a9', height: this.state.headerButtonHeight + 40, paddingTop: 20, paddingBottom: 10, elevation: 0}}>
           <Left style={{paddingLeft: 20}}>
             <Button onPress={Actions.homeScene} disabled={!this.props.conn.isConnected} style={{backgroundColor: 'black', height: this.state.headerButtonHeight, width: this.state.headerButtonWidth}}>
               <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-                <Icon style={{fontSize: this.state.headerButtonHeight / 2.5}} color='white' name='search' />
-                <Text style={{fontSize: 15, textAlign: 'center'}}>Search the Website</Text>
+                <Icon style={{fontSize: this.state.headerButtonHeight / 2.5, color: '#e6ffff'}} name='search' />
+                <Text style={{fontSize: 15, textAlign: 'center', color: '#e6ffff'}}>Search the Website</Text>
               </View>
             </Button>
           </Left>
           <Right style={{paddingRight: 20}}>
             <Button onPress={this.scanScene.bind(this)} disabled={!this.props.conn.isConnected} style={{backgroundColor: 'black', height: this.state.headerButtonHeight, width: this.state.headerButtonWidth}}>
               <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-                <Icon style={{fontSize: this.state.headerButtonHeight / 2.5}} color='white' name='md-barcode' />
-                <Text style={{fontSize: 15, textAlign: 'center'}}>Scan Barcode</Text>
+                <Icon style={{fontSize: this.state.headerButtonHeight / 2.5, color: '#e6ffff'}} name='md-barcode' />
+                <Text style={{fontSize: 15, textAlign: 'center', color: '#e6ffff'}}>Scan Barcode</Text>
               </View>
             </Button>
           </Right>
@@ -304,8 +308,8 @@ class ListScene extends Component {
               disabled={!this.props.conn.isConnected || !this.props.upToCart || this.props.cart.loading}
               style={{backgroundColor: !this.props.cart.upToCart ? this.state.buttonGrey : this.state.buttonBlue, height: this.state.footerButtonHeight, marginLeft: 10, marginRight: 5}}>
               <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-                <Icon style={{fontSize: 35}} color='white' name='ios-cloud-upload-outline' />
-                <Text style={{textAlign: 'center', color: 'white'}}>Upload to Cart</Text>
+                <Icon style={{fontSize: 35, color: '#e6ffff'}} name='ios-cloud-upload-outline' />
+                <Text style={{textAlign: 'center', color: '#e6ffff'}}>Upload to Cart</Text>
               </View>
             </Button>
             <Button
@@ -313,16 +317,16 @@ class ListScene extends Component {
               disabled={!this.props.conn.isConnected}
               style={{backgroundColor: this.state.buttonBlue, marginLeft: 5, height: this.state.footerButtonHeight, marginRight: 5}}>
               <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-                <Icon style={{fontSize: 35}} color='white' name='ios-cart-outline' />
-                <Text style={{textAlign: 'center', color: 'white'}}>View Cart</Text>
+                <Icon style={{fontSize: 35, color: '#e6ffff'}} name='ios-cart-outline' />
+                <Text style={{textAlign: 'center', color: '#e6ffff'}}>View Cart</Text>
               </View>
             </Button>
             <Button
               onPress={this.bottomOptions.bind(this)}
               style={{backgroundColor: this.state.buttonBlue, marginLeft: 5, height: this.state.footerButtonHeight, marginRight: 10}}>
               <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-                <Icon style={{fontSize: 35}} color='white' name='ios-list-outline' />
-                <Text style={{textAlign: 'center', color: 'white'}}>Other Actions</Text>
+                <Icon style={{fontSize: 35, color: '#e6ffff'}} name='ios-list-outline' />
+                <Text style={{textAlign: 'center', color: '#e6ffff'}}>Other Actions</Text>
               </View>
             </Button>
           </FooterTab>

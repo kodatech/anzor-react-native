@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5FCFF',
   },
   topbar: {
-    height: 30,
+    height: 50,
     justifyContent: 'center',
     alignItems: 'center',
   },
