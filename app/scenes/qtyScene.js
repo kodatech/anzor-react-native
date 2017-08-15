@@ -20,6 +20,15 @@ import SpinnerQty from './loaders/SpinnerQty'
 
 class QtyScene extends Component {
 
+  constructor (props) {
+    super(props)
+    this.state = {
+      height: Dimensions.get('window').height,
+      width: Dimensions.get('window').width
+    }
+    // console.log(this.state.width / 1.29)
+  }
+
   addNewProduct (text) {
     this.props.addNewProduct()
   }
@@ -69,32 +78,34 @@ class QtyScene extends Component {
     if (this.props.product) {
       // console.log(this.props.product[0])
       return (
-        <View style={{flex: 1, flexDirection: 'column', justifyContent: 'space-around', backgroundColor: '#0083a9', alignContent: 'center', alignItems: 'center'}}>
-          <TouchableWithoutFeedback style={{width: 40, height: 40}}
-            onPress={this.discardProduct.bind(this)}>
+        <View style={{flex: 1, backgroundColor: '#0083a9'}}>
+          <View style={{height: this.state.height / 1.6, flexDirection: 'column', justifyContent: 'space-around', alignContent: 'center', alignItems: 'center'}}>
+            <TouchableWithoutFeedback style={{width: 40, height: 40}}
+              onPress={this.discardProduct.bind(this)}>
+              <View>
+                <Text style={{color: '#FFFFFF', fontSize: 30, textAlign: 'right', paddingLeft: this.state.width / 1.29, fontWeight: 'bold'}}>X</Text>
+              </View>
+            </TouchableWithoutFeedback>
             <View>
-              <Text style={{color: '#FFFFFF', fontSize: 30, textAlign: 'right', paddingLeft: 280, fontWeight: 'bold'}}>X</Text>
+              <Text style={{color: '#FFFFFF', fontSize: 25, textAlign: 'center'}}>Type in quantity for:</Text>
             </View>
-          </TouchableWithoutFeedback>
-          <View>
-            <Text style={{color: '#FFFFFF', fontSize: 25, textAlign: 'center'}}>Type in quantity for:</Text>
-          </View>
-          <View><Text style={{color: '#000000', fontSize: 25, textAlign: 'center', padding: 40}}>{this.props.product[0].description}</Text></View>
-          <View style={{paddingBottom: 0, justifyContent: 'center', alignContent: 'center', flexDirection: 'row'}}>
-            <TextInput
-              style={{height: 80, borderColor: 'gray', borderWidth: 1, backgroundColor: '#FFFFFF', fontSize: 45, width: 200, textAlign: 'center'}}
-              defaultValue={this.props.product[0].quantity.toString()}
-              editable
-              underlineColorAndroid='transparent'
-              keyboardType='numeric'
-              onChangeText={this.onQtyChange.bind(this)}
-              autoFocus
-              // this.addNewProduct(this.refs.textInput._lastNativeText)
-            />
-          </View>
-          <Text style={{color: '#b3ff66', fontSize: 25, textAlign: 'center'}}>{this.isKanbanItem()}</Text>
-          <View style={{marginBottom: 0, justifyContent: 'center', alignContent: 'center', flexDirection: 'row'}}>
-            {this.renderButton()}
+            <View><Text style={{color: '#000000', fontSize: 25, textAlign: 'center', padding: 40}}>{this.props.product[0].description}</Text></View>
+            <View style={{paddingBottom: 0, justifyContent: 'center', alignContent: 'center', flexDirection: 'row'}}>
+              <TextInput
+                style={{height: 80, borderColor: 'gray', borderWidth: 1, backgroundColor: '#FFFFFF', fontSize: 45, width: 200, textAlign: 'center'}}
+                defaultValue={this.props.product[0].quantity.toString()}
+                editable
+                underlineColorAndroid='transparent'
+                keyboardType='numeric'
+                onChangeText={this.onQtyChange.bind(this)}
+                autoFocus
+                // this.addNewProduct(this.refs.textInput._lastNativeText)
+              />
+            </View>
+            <Text style={{color: '#b3ff66', fontSize: 25, textAlign: 'center'}}>{this.isKanbanItem()}</Text>
+            <View style={{marginBottom: 0, justifyContent: 'center', alignContent: 'center', flexDirection: 'row'}}>
+              {this.renderButton()}
+            </View>
           </View>
         </View>
       )

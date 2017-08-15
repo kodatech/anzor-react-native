@@ -45,10 +45,11 @@ class LogOutScene extends Component {
       fiftheen: Dimensions.get('window').height / 45,
       fifty: Dimensions.get('window').height / 13
     })
-    console.log(Dimensions.get('window').height / 13)
+    // console.log(Dimensions.get('window').height / 13)
   }
 
   bottomOptions() {
+    console.log('here')
     const BUTTONS = [
       'Remove account from device',
     ]

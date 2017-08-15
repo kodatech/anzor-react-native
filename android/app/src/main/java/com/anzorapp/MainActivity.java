@@ -1,4 +1,4 @@
-package com.anzorapp;
+package com.phonegap.ryanw.barcode;
 
 import com.facebook.react.ReactActivity;
 

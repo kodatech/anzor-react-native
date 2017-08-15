@@ -182,6 +182,7 @@ class ListScene extends Component {
       return (
         <Content style={{flex: 1, flexDirection: 'column'}}>
           <Icon style={{fontSize: this.state.hundred, marginLeft: this.state.hundred + 30, marginTop: this.state.hundred, color: 'gray'}} name='md-cloud-outline' />
+          <Icon style={{fontSize: this.state.hundred / 2, marginLeft: this.state.hundred + 60, marginTop: -70, color: 'gray'}} name='md-close' />
           <Text style={{fontSize: this.state.ten, marginLeft: this.state.hundred + 25, paddingTop: this.state.ten, color: 'gray'}}>No Internet Connection</Text>
         </Content>
       )
@@ -206,7 +207,7 @@ class ListScene extends Component {
                     <Body>
                       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                         <Text style={{color: this.state.buttonBlue, width: this.state.widthDescription}}>{item.description}</Text>
-                        <TouchableWithoutFeedback style={{width: 40, height: 40}} onPress={() => this.setState({
+                        <TouchableWithoutFeedback hitSlop={{top: 10, left: 10, bottom: 10, right: 10}} style={{width: 40, height: 40}} onPress={() => this.setState({
                           showModal: !this.state.showModal,
                           itemToDelete: item.code
                         })}><Text style={{fontWeight: 'bold'}}>X</Text></TouchableWithoutFeedback>

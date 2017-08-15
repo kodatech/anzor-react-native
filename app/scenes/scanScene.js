@@ -22,8 +22,8 @@ class ScanScene extends Component {
 
   constructor (props) {
     super(props)
-    // console.log(Dimensions.get('window').height / 10)
-    // console.log(Dimensions.get('window').width / 2.5)
+    this._onPressCode = this._onPressCode.bind(this)
+    this._handleBarCodeReadWithButton = this._handleBarCodeReadWithButton.bind(this)
     this.state = {
       scanning: false,
       barCodeScannedValue: false,
@@ -48,8 +48,6 @@ class ScanScene extends Component {
 
   componentDidMount () {
     this.props.checkIfLoggedOn('scanScene')
-    this._setFocusStatus(false)
-    this._reset()
     // setTimeout(() => {
     //   this.setState({
     //     testloading: false
@@ -97,19 +95,23 @@ class ScanScene extends Component {
     //   this._reset()
     // }, 5000)
     // Vibration.vibrate([100, 50], false)
-    this.setState({ focusStatus: true }, () => timer.setTimeout(
+    this.setState({
+      focusStatus: true,
+      barCodeScannedValue: e.data,
+      barCodeScannedType: e.type}, () => timer.setTimeout(
       this, '_reset', () => this.setState({
         focusStatus: false,
         barCodeScannedValue: null,
         barCodeScannedType: null
       }), 2000
     ))
-    this._setScanning(true)
-    this._setBarCodeScanned(e)
+    // this._setScanning(true)
+    // this._setBarCodeScanned(e)
   }
 
   _reset () {
     this.setState({
+      focusStatus: false,
       barCodeScannedValue: null,
       barCodeScannedType: null,
     })
@@ -129,12 +131,12 @@ class ScanScene extends Component {
 
   _renderCamera () {
     return (
-      <Camera style={styles.preview} onBarCodeRead={this._handleBarCodeReadWithButton.bind(this)} captureAudio={false} ref='camera'>
+      <Camera style={styles.preview} onBarCodeRead={this._handleBarCodeReadWithButton} captureAudio={false} ref='camera'>
         {this._renderCameraMarker()}
         <View style={{paddingBottom: 10, alignItems: 'center', justifyContent: 'center', flexDirection: 'column', backgroundColor: 'transparent', marginBottom: 20}}>
           <View style={this.state.focusStatus ? styles.outercirclegreen : styles.outercirclered}>
             <View style={styles.transparentcircle}>
-              <TouchableOpacity style={this.state.focusStatus ? styles.circlegreen : styles.circlered} onPress={this._onPressCode.bind(this)} />
+              <TouchableOpacity style={this.state.focusStatus ? styles.circlegreen : styles.circlered} onPressIn={this._onPressCode} disabled={!this.state.focusStatus} />
             </View>
           </View>
           <Button onPress={Actions.listScene} style={{backgroundColor: '#0083a9', width: this.state.buttonWidth}}>
@@ -148,12 +150,13 @@ class ScanScene extends Component {
   _onPressCode (e) {
     if (this.state.barCodeScannedValue) {
       this.props.addQtyNewProduct(this.state.barCodeScannedValue)
-      this._setFocusStatus(false)
+      // this._setFocusStatus(false)
       this._reset()
       Actions.qtyScene()
     } else {
       this.props.addQtyNewProduct('')
-      this._setFocusStatus(false)
+      this._reset()
+      // this._setFocusStatus(false)
       Actions.listScene()
     }
   }
