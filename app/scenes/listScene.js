@@ -5,6 +5,7 @@ import {Dimensions, StyleSheet, AsyncStorage, View, NetInfo, TouchableWithoutFee
 import {connect} from 'react-redux'
 import {getCartList, qtyChanged, clearList, deleteProduct, setIsConnected, checkOut, checkIfLoggedOn, logOut} from '../actions'
 import {ConfirmModalScene} from './confirmModalScene'
+import {NoConnectionModalScene} from './noConnectionModalScene'
 import { ADDRESS } from '../actions/configuration'
 import SpinnerList from './loaders/SpinnerList'
 
@@ -178,16 +179,15 @@ class ListScene extends Component {
   }
 
   articleList() {
-    if (!this.props.conn.isConnected) {
-      return (
-        <Content style={{flex: 1, flexDirection: 'column'}}>
-          <Icon style={{fontSize: this.state.hundred, marginLeft: this.state.hundred + 30, marginTop: this.state.hundred, color: 'gray'}} name='md-cloud-outline' />
-          <Icon style={{fontSize: this.state.hundred / 2, marginLeft: this.state.hundred + 60, marginTop: -70, color: 'gray'}} name='md-close' />
-          <Text style={{fontSize: this.state.ten, marginLeft: this.state.hundred + 25, paddingTop: this.state.ten, color: 'gray'}}>No Internet Connection</Text>
-        </Content>
-      )
-    }
-    if (this.props.conn.isConnected && !this.props.cart.loading) {
+    // if (!this.props.conn.isConnected) {
+    //   return (
+    //     <Content style={{flex: 1, flexDirection: 'column'}}>
+    //       <Icon style={{fontSize: this.state.hundred, marginLeft: this.state.hundred + 30, marginTop: this.state.hundred, color: 'gray'}} name='md-cloud-outline' />
+    //       <Text style={{fontSize: this.state.ten, marginLeft: this.state.hundred + 25, paddingTop: this.state.ten, color: 'gray'}}>No Internet Connection</Text>
+    //     </Content>
+    //   )
+    // }
+    if (!this.props.cart.loading) {
       return (
         <View style={{flex: 1}}>
           <Content>
@@ -256,6 +256,10 @@ class ListScene extends Component {
             onDecline={this.onDecline.bind(this)}>
             Are you sure you want to delete this?
           </ConfirmModalScene>
+          <NoConnectionModalScene
+            visible={!this.props.conn.isConnected} >
+              No Internet Connection
+          </NoConnectionModalScene>
         </View>
       )
     }

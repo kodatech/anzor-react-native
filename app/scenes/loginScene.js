@@ -85,14 +85,8 @@ class LoginScene extends Component {
   }
 
   onButtonPress () {
-    // const {email, password} = this.props
-    // this.setState({ loading: true })
+    // loginUser email & password arguments
     this.props.loginUser(this.props.email, this.props.password)
-    // Actions.listScene()
-    // setTimeout(() => {
-    //   this.setState({ loading: false })
-    //   Actions.listScene()
-    // }, 3000)
   }
 
   renderButton() {
@@ -166,36 +160,16 @@ class LoginScene extends Component {
     )
   }
 
-  // <TouchableWithoutFeedback
-  //   style={{alignItems: 'center', backgroundColor: '#0083a9'}}
-  //   onPress={() => this.setState({
-  //     checked: !this.state.checked
-  //   })}>
-  //   <Icon name='md-checkmark' style={{color: '#FFFFFF', backgroundColor: !this.state.checked ? '#000000' : '#FFFFFF', position: 'absolute', top: 20, right: 200}} />
-  // </TouchableWithoutFeedback>
-  // <Text style={{height: 25, color: '#FFFFFF', fontSize: 15, textAlign: 'center', textAlignVertical: 'center', paddingLeft: 20, paddingBottom: 3, paddingTop: 3}}>Remember Me</Text>
-
-
   render () {
     return (
       <View style={styles.containerStyle}>
-        <Image source={require('../resources/logo2.png')} />
-        <Text style={{padding: 20, fontSize: 25, color: '#FFFFFF'}}>Barcode Scanner</Text>
+        <Image style={{width: 260}} source={require('../resources/logo2.png')} resizeMode='contain' />
+        <Text style={{padding: 10, fontSize: 25, color: '#FFFFFF'}}>Barcode Scanner</Text>
         {this.renderScene()}
       </View>
     )
   }
-  // render () {
-  //   return (
-  //     <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-  //       <View style={{width: this.state.width / 1.2, height: 50, backgroundColor: 'white', marginTop: 30}} >
-  //         <Text style={{textAlignVertical: 'center', textAlign: 'center'}}>Anzor Logo</Text>
-  //       </View>
-  //       <Text style={{marginTop: 10, paddingBottom: 50, color: '#FFFFFF'}}>Product Scanner</Text>
-  //       {this.renderScene()}
-  //     </View>
-  //   )
-  // }
+
 }
 
 const mapStateToProps = state => {

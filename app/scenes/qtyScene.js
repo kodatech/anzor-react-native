@@ -79,7 +79,7 @@ class QtyScene extends Component {
       // console.log(this.props.product[0])
       return (
         <View style={{flex: 1, backgroundColor: '#0083a9'}}>
-          <View style={{height: this.state.height / 1.6, flexDirection: 'column', justifyContent: 'space-around', alignContent: 'center', alignItems: 'center'}}>
+          <View style={{height: this.state.height / 1.6, flexDirection: 'column', alignContent: 'center', alignItems: 'center'}}>
             <TouchableWithoutFeedback style={{width: 40, height: 40}}
               onPress={this.discardProduct.bind(this)}>
               <View>
@@ -89,7 +89,7 @@ class QtyScene extends Component {
             <View>
               <Text style={{color: '#FFFFFF', fontSize: 25, textAlign: 'center'}}>Type in quantity for:</Text>
             </View>
-            <View><Text style={{color: '#000000', fontSize: 25, textAlign: 'center', padding: 40}}>{this.props.product[0].description}</Text></View>
+            <View><Text style={{color: '#000000', fontSize: 25, textAlign: 'center', padding: 10}}>{this.props.product[0].description}</Text></View>
             <View style={{paddingBottom: 0, justifyContent: 'center', alignContent: 'center', flexDirection: 'row'}}>
               <TextInput
                 style={{height: 80, borderColor: 'gray', borderWidth: 1, backgroundColor: '#FFFFFF', fontSize: 45, width: 200, textAlign: 'center'}}

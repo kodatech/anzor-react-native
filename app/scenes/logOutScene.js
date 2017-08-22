@@ -100,8 +100,8 @@ class LogOutScene extends Component {
   render () {
     return (
       <View style={styles.containerStyle}>
-        <Image source={require('../resources/logo2.png')} />
-        <Text style={{padding: this.state.fiftheen + 5, fontSize: this.state.fiftheen, color: '#FFFFFF'}}>Barcode Scanner</Text>
+        <Image style={{width: 260}} source={require('../resources/logo2.png')} resizeMode='contain' />
+        <Text style={{padding: this.state.fiftheen + 5, fontSize: this.state.fiftheen + 10, color: '#FFFFFF'}}>Barcode Scanner</Text>
         {this.renderScene()}
       </View>
     )

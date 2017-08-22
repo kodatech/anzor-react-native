@@ -129,7 +129,8 @@ export const deleteProduct = (id) => {
         })
       }
       AsyncStorage.removeItem('orders')
-      AsyncStorage.setItem('orders')
+      // AsyncStorage.setItem('orders')
+      let first = true
       const products = []
       let totalOrder = 0
       for (let key in obj) {
@@ -143,7 +144,12 @@ export const deleteProduct = (id) => {
                   let value = key.toString(), order = {
                       [value]: obj[key]
                     }
-                  AsyncStorage.mergeItem('orders', JSON.stringify(order))
+                  if (first) {
+                    first = false
+                    AsyncStorage.setItem('orders', JSON.stringify(order))
+                  } else {
+                    AsyncStorage.mergeItem('orders', JSON.stringify(order))
+                  }
                   products.push({
                     description: responseJson[0].description,
                     stockcode: responseJson[0].stockcode,
