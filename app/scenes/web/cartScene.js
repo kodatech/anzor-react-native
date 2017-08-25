@@ -53,6 +53,7 @@ class CartScene extends Component {
   }
 
   render () {
+    let jsCode = `jQuery('.alert').hide()`
     return (
       <View style={styles.container}>
         <View style={styles.topbar}>
@@ -69,6 +70,7 @@ class CartScene extends Component {
           source={{uri: `${URI}cart?uid=${this.props.auth.uid}`}}
           renderLoading={this.renderLoading}
           onNavigationStateChange={this.onNavigationStateChange.bind(this)}
+          injectedJavaScript={jsCode}
           startInLoadingState
         />
         <View style={styles.bottombar}>

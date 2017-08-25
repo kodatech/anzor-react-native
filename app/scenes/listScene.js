@@ -215,7 +215,7 @@ class ListScene extends Component {
                       <Text note>{item.stockcode}</Text>
                       <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignContent: 'flex-start'}}>
                         <Text style={{textAlignVertical: 'center', width: 35}}>Qty</Text>
-                        <View style={{padding: 0, backgroundColor: 'transparent', flex: 1, borderColor: 'grey', borderWidth: 1, height: 30, alignContent: 'center'}}>
+                        <View style={{overflow: 'hidden', padding: 0, backgroundColor: 'transparent', flex: 1, borderColor: 'grey', borderWidth: 1, height: 30, alignContent: 'center'}}>
                           <Input name={item.code} defaultValue={item.value.toString()}
                             // onEndEditing={
                             onChange={
@@ -342,7 +342,8 @@ class ListScene extends Component {
   bottomOptions() {
     const BUTTONS = [
       'Clear the list',
-      'Logout'
+      'Logout',
+      'Cancel'
     ]
 
     const DESTRUCTIVE_INDEX = 3
@@ -359,10 +360,13 @@ class ListScene extends Component {
           this.props.clearList()
         }
         if (BUTTONS[buttonIndex] === 'Logout') {
-          console.log('logout')
+          // console.log('logout')
           // AsyncStorage.removeItem('user')
           // Actions.loginScene()
           this.props.logOut()
+        }
+        if (BUTTONS[buttonIndex] === 'Cancel') {
+
         }
         // this.setState({ clicked: BUTTONS[buttonIndex] })
       }
