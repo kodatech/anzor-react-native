@@ -3,7 +3,7 @@ import {Actions} from 'react-native-router-flux'
 import {Container, Content, Header, Button, Text, Left, Right, Footer, FooterTab, List, Body, ActionSheet, Spinner, Input, Icon, ListItem} from 'native-base'
 import {Dimensions, StyleSheet, AsyncStorage, View, NetInfo, TouchableWithoutFeedback, ListView, TextInput, BackHandler} from 'react-native'
 import {connect} from 'react-redux'
-import {getCartList, qtyChanged, clearList, deleteProduct, setIsConnected, checkOut, checkIfLoggedOn, logOut} from '../actions'
+import {getCartList, qtyChanged, clearList, clearError, deleteProduct, setIsConnected, checkOut, checkIfLoggedOn, logOut} from '../actions'
 import {ConfirmModalScene} from './confirmModalScene'
 import {NoConnectionModalScene} from './noConnectionModalScene'
 import { ADDRESS } from '../actions/configuration'
@@ -266,6 +266,7 @@ class ListScene extends Component {
   }
 
   scanScene () {
+    this.props.clearError()
     Actions.scanScene({type: 'reset'})
   }
 
@@ -348,6 +349,7 @@ class ListScene extends Component {
 
     const DESTRUCTIVE_INDEX = 3
     const CANCEL_INDEX = 4
+
     ActionSheet.show(
       {
         options: BUTTONS,
@@ -361,12 +363,13 @@ class ListScene extends Component {
         }
         if (BUTTONS[buttonIndex] === 'Logout') {
           // console.log('logout')
-          // AsyncStorage.removeItem('user')
+          AsyncStorage.removeItem('orders')
           // Actions.loginScene()
+          this.props.clearError()
           this.props.logOut()
         }
         if (BUTTONS[buttonIndex] === 'Cancel') {
-
+          this.props.clearError()
         }
         // this.setState({ clicked: BUTTONS[buttonIndex] })
       }
@@ -394,4 +397,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, {getCartList, qtyChanged, clearList, deleteProduct, setIsConnected, checkOut, checkIfLoggedOn, logOut})(ListScene)
+export default connect(mapStateToProps, {getCartList, qtyChanged, clearList, clearError, deleteProduct, setIsConnected, checkOut, checkIfLoggedOn, logOut})(ListScene)

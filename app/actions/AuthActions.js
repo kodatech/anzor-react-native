@@ -112,14 +112,14 @@ export const loginUser = (email, password) => {
     let url = `${URI}login?name=${email}&pass=${pass}`
 
     // let url = `${URI}login?name=${email}&pass=${pass}`
-    console.log(url)
+    // console.log(url)
     fetch(url)
     .then((response) => response.json())
     .then((responseJson) => {
       if (responseJson) {
         // console.log(pass2.ciphertext)
         // console.log(pass2.key)
-        console.log('RJ23', responseJson)
+        // console.log('RJ23', responseJson)
         loginUserSuccess(dispatch, responseJson[0].pass, responseJson[0].uid, email, password)
       } else {
         loginUserFail(dispatch)

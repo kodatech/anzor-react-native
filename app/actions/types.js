@@ -47,3 +47,5 @@ export const GET_USER = 'get_user'
 export const GET_USER_SUCCESS = 'get_user_success'
 
 export const DISCARD_PRODUCT = 'discard_product'
+
+export const CLEAR_ERROR = 'clear_error'

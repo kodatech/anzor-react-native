@@ -20,7 +20,8 @@ import {
   CART_NO_CONNECTED,
   GET_PRODUCT_FOR_QTY,
   QTY_CHANGED_FROM_PRODUCT,
-  DISCARD_PRODUCT
+  DISCARD_PRODUCT,
+  CLEAR_ERROR
 } from '../actions/types'
 
 const INITIAL_STATE = {
@@ -38,6 +39,8 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE, action) => {
   // console.log(action)
   switch (action.type) {
+    case CLEAR_ERROR:
+      return { ...state, error: '' }
     case DISCARD_PRODUCT:
       return { ...state, product: action.payload }
     case QTY_CHANGED_FROM_PRODUCT:
@@ -47,13 +50,13 @@ export default (state = INITIAL_STATE, action) => {
     case QTY_CHANGED_FAIL:
       return { ...state, error: action.error }
     case GET_CART_LIST:
-      return { ...state, loading: true, error: '' }
+      return { ...state, loading: true }
     case CART_LIST_SUCCESS:
-      return { ...state, list: action.payload, loading: action.loading, totalOrder: action.totalOrder, error: '', message: '', arrow: '', upToCart: action.upToCart }
+      return { ...state, list: action.payload, loading: action.loading, totalOrder: action.totalOrder, message: '', arrow: '', upToCart: action.upToCart }
     case CART_LIST_FAIL:
-      return { ...state, list: action.payload, loading: false, error: '', totalOrder: 0, upToCart: action.upToCart }
+      return { ...state, list: action.payload, loading: false, totalOrder: 0, upToCart: action.upToCart }
     case CLEAR_LIST:
-      return { ...state, list: action.payload, loading: false, totalOrder: action.totalOrder, message: '', arrow: '', upToCart: false }
+      return { ...state, list: action.payload, loading: false, totalOrder: action.totalOrder, message: '', error: '', arrow: '', upToCart: false }
     case DELETE_PRODUCT:
       return { ...state, loading: true }
     case DELETE_PRODUCT_SUCCESS:
@@ -71,6 +74,7 @@ export default (state = INITIAL_STATE, action) => {
         totalOrder: action.totalOrder,
         loading: false,
         upToCart: false,
+        error: '',
         // viewCart: false
         message: 'Great! Your products have been uploaded to your cart. ',
         // arrow: '↓'

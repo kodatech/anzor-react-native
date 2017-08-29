@@ -22,8 +22,15 @@ import {
   LOGGED_ON_FAIL,
   GET_PRODUCT_FOR_QTY,
   QTY_CHANGED_FROM_PRODUCT,
-  DISCARD_PRODUCT
+  DISCARD_PRODUCT,
+  CLEAR_ERROR
 } from './types'
+
+export const clearError = () => {
+  return ({
+    type: CLEAR_ERROR
+  })
+}
 
 export const clearList = () => {
   AsyncStorage.removeItem('orders')
@@ -395,10 +402,12 @@ export const addQtyNewProduct = (barCodeScannedValue) => {
             type: GET_PRODUCT_FOR_QTY,
             payload: responseJson,
           })
+          Actions.qtyScene()
         } else {
           dispatch({
             type: STORE_PRODUCT_FAIL
           })
+          Actions.listScene()
         }
       })
       .catch((error) => {
@@ -406,6 +415,7 @@ export const addQtyNewProduct = (barCodeScannedValue) => {
         dispatch({
           type: STORE_PRODUCT_FAIL
         })
+        Actions.listScene()
       })
   }
 }

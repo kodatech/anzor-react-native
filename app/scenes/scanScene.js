@@ -65,6 +65,8 @@ class ScanScene extends Component {
       barCodeScannedValue: e.data,
       barCodeScannedType: e.type,
     })
+    delete e.data
+    delete e.type
     // this.setState({ barCodeScannedType: e.type })
   }
 
@@ -94,7 +96,8 @@ class ScanScene extends Component {
     // let clearId = setTimeout(() => {
     //   this._reset()
     // }, 5000)
-    // Vibration.vibrate([100, 50], false)
+    console.log('data: ', e.data)
+    console.log('data: ', e.type)
     this.setState({
       focusStatus: true,
       barCodeScannedValue: e.data,
@@ -105,6 +108,8 @@ class ScanScene extends Component {
         barCodeScannedType: null
       }), 2000
     ))
+    delete e.data
+    delete e.type
     // this._setScanning(true)
     // this._setBarCodeScanned(e)
   }
@@ -152,7 +157,7 @@ class ScanScene extends Component {
       this.props.addQtyNewProduct(this.state.barCodeScannedValue)
       // this._setFocusStatus(false)
       this._reset()
-      Actions.qtyScene()
+      // Actions.qtyScene()
     } else {
       this.props.addQtyNewProduct('')
       this._reset()

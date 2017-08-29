@@ -3,7 +3,7 @@ import {WebView, Text, View, TouchableOpacity, StyleSheet, BackHandler} from 're
 import {Actions} from 'react-native-router-flux'
 import {Spinner, Icon} from 'native-base'
 import {connect} from 'react-redux'
-
+import {clearError} from '../../actions'
 import Spinnerb from '../loaders/Spinnerb'
 import { ADDRESS } from '../../actions/configuration'
 
@@ -24,6 +24,10 @@ class HomeScene extends Component {
       // }
       return true
     })
+  }
+
+  componentWillMount() {
+    this.props.clearError()
   }
 
   renderLoading() {
@@ -112,4 +116,4 @@ const mapStateToProps = state => {
   return {loading: true}
 }
 
-export default connect(mapStateToProps, {})(HomeScene)
+export default connect(mapStateToProps, {clearError})(HomeScene)
