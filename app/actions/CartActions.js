@@ -1,6 +1,6 @@
 import { AsyncStorage } from 'react-native'
 import { Actions } from 'react-native-router-flux'
-import { URI } from './configuration'
+import { URI, URI2 } from './configuration'
 import {
   QTY_CHANGED_SUCCESS,
   QTY_CHANGED_FAIL,
@@ -219,13 +219,14 @@ export const checkOut = () => {
             pass = pass.substr(0, pass.length - 1)
 
             let Crypto = require('crypto-js')
-
-            // let data = '12345678'
+/*
             let key = '59b6ab46d379b89d794c87b74a511fbd59b6ab46d379b89d794c87b74a511fbd'
             let iv = '0aaff094b6dc29742cc98a4bac8bc8f9'
             pass = Crypto.AES.encrypt(Crypto.enc.Utf8.parse(pass), Crypto.enc.Hex.parse(key), { iv: Crypto.enc.Hex.parse(iv) })
-
-            let url = `${URI}login?name=${email}&pass=${pass}`
+*/
+            // let URI2 = 'http://www.anzor.co.nz/anzor_services_rn/'
+            pass = changeURIEncode(pass)
+            let url = `${URI2}login?name=${email}&pass=${pass}`
             // console.log(url)
             fetch(url)
             .then((response) => response.json())
@@ -447,4 +448,21 @@ export const addNewProduct = () => {
       })
     }
   }
+}
+
+const changeURIEncode = (password) => {
+  let pass = ''
+  for (let i = 0; i < password.length; i++) {
+    switch (password[i]) {
+      case '&':
+        pass += '%26'
+        break
+      case '=':
+        pass += '%3D'
+        break
+      default:
+        pass += password[i]
+    }
+  }
+  return pass
 }

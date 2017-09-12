@@ -4,7 +4,7 @@ import {Actions} from 'react-native-router-flux'
 import { Spinner, Icon } from 'native-base'
 import {connect} from 'react-redux'
 import {checkIfLoggedOn, changeViewCartStatus, clearError} from '../../actions'
-import { URI } from '../../actions/configuration'
+import { URI2 } from '../../actions/configuration'
 // console.log(URI)
 import SpinnerList from '../loaders/SpinnerList'
 
@@ -55,6 +55,8 @@ class CartScene extends Component {
 
   render () {
     let jsCode = `jQuery('.alert').hide()`
+    let URI2 = 'http://www.anzor.co.nz/anzor_services_rn/'
+
     return (
       <View style={styles.container}>
         <View style={styles.topbar}>
@@ -68,7 +70,7 @@ class CartScene extends Component {
         <WebView
           ref={WEBVIEW_REF}
           style={{flex: 1}}
-          source={{uri: `${URI}cart?uid=${this.props.auth.uid}`}}
+          source={{uri: `${URI2}cart?uid=${this.props.auth.uid}`}}
           renderLoading={this.renderLoading}
           onNavigationStateChange={this.onNavigationStateChange.bind(this)}
           injectedJavaScript={jsCode}

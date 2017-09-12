@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.phonegap.ryanw.barcode"
-    android:versionCode="5"
+    android:versionCode="8"
     android:versionName="3.0">
 
     <uses-permission android:name="android.permission.INTERNET" />
