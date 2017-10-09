@@ -70,7 +70,7 @@ export default class AppContainer extends Component {
             <Scene key='loginScene' animation='withoutAnimation' type={ActionConst.REPLACE} component={LoginScene} title='Login Scene' hideNavBar />
             <Scene key='listScene' animation='withoutAnimation' type={ActionConst.REPLACE} component={ListScene} title='List Scene' hideNavBar />
             <Scene key='scanScene' animation='withoutAnimation' component={ScanScene} title='Scan Scene' hideNavBar />
-            <Scene key='qtyScene' animation='withoutAnimation' component={QtyScene} title='Quantity Scene' hideNavBar />
+            <Scene key='qtyScene' animation='withoutAnimation' type={ActionConst.REPLACE} component={QtyScene} title='Quantity Scene' hideNavBar />
             <Scene key='homeScene' animation='withoutAnimation' component={HomeScene} title='Home Scene' hideNavBar />
             <Scene key='cartScene' animation='withoutAnimation' component={CartScene} title='Cart Scene' hideNavBar />
             <Scene key='signUpScene' animation='withoutAnimation' type={ActionConst.REPLACE} component={SignUpScene} title='Sign Up Scene' hideNavBar />

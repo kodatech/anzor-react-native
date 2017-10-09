@@ -20,6 +20,7 @@ import {
   GET_USER_SUCCESS
 } from './types'
 
+import axios from 'axios'
 
 export const getUser = () => {
   return (dispatch) => {
@@ -93,10 +94,11 @@ export const passwordChanged = (text) => {
 }
 
 export const loginUser = (email, password) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({type: LOGIN_USER})
 /*
     let Crypto = require('crypto-js')
+
     let key = '59b6ab46d379b89d794c87b74a511fbd59b6ab46d379b89d794c87b74a511fbd'
     let iv = '0aaff094b6dc29742cc98a4bac8bc8f9'
     pass = Crypto.AES.encrypt(Crypto.enc.Utf8.parse(password), Crypto.enc.Hex.parse(key), { iv: Crypto.enc.Hex.parse(iv) })
@@ -108,17 +110,27 @@ export const loginUser = (email, password) => {
 
     let pass = changeURIEncode(password)
     let url = `${URI}login?name=${email}&pass=${pass}`
+    let url2 = `http://anzornz.kodait.com/anzor_services_rn/login?name=${email}&pass=${pass}`
 
     // let url = `${URI}login?name=${email}&pass=${pass}`
     // console.log(url)
-    fetch(url)
+    fetch(url, {method: 'GET',
+      cache: 'no-cache',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      }})
     .then((response) => response.json())
     .then((responseJson) => {
+      let test = true
       if (responseJson) {
         // console.log(pass2.ciphertext)
         // console.log(pass2.key)
         // console.log('RJ23', responseJson)
-        loginUserSuccess(dispatch, responseJson[0].pass, responseJson[0].uid, email, password)
+        // loginUserSuccess(dispatch, responseJson[0].pass, responseJson[0].uid, email, password)
+        console.log(responseJson)
+        Actions.listScene()
+
       } else {
         loginUserFail(dispatch)
       }
@@ -163,6 +175,7 @@ export const checkIfLoggedOn = (scene, dispatch) => {
                 let iv = '0aaff094b6dc29742cc98a4bac8bc8f9'
                 pass = Crypto.AES.encrypt(Crypto.enc.Utf8.parse(pass), Crypto.enc.Hex.parse(key), { iv: Crypto.enc.Hex.parse(iv) })
 */
+
                 let url = `${URI}login?name=${email}&pass=${pass}`
                 fetch(url)
                 .then((response) => response.json())

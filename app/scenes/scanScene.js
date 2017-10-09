@@ -141,7 +141,11 @@ class ScanScene extends Component {
         <View style={{paddingBottom: 10, alignItems: 'center', justifyContent: 'center', flexDirection: 'column', backgroundColor: 'transparent', marginBottom: 20}}>
           <View style={this.state.focusStatus ? styles.outercirclegreen : styles.outercirclered}>
             <View style={styles.transparentcircle}>
-              <TouchableOpacity style={this.state.focusStatus ? styles.circlegreen : styles.circlered} onPressIn={this._onPressCode} disabled={!this.state.focusStatus} />
+              <TouchableOpacity style={this.state.focusStatus ? styles.circlegreen : styles.circlered}
+                onPressIn={
+                  this._onPressCode
+                }
+                disabled={!this.state.focusStatus} />
             </View>
           </View>
           <Button onPress={Actions.listScene} style={{backgroundColor: '#0083a9', width: this.state.buttonWidth}}>
@@ -260,6 +264,7 @@ const styles = StyleSheet.create({
   },
   rectangleContainer: {
     flex: 1,
+    marginTop: 200,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'transparent'

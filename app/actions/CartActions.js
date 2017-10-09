@@ -224,7 +224,7 @@ export const checkOut = () => {
             let iv = '0aaff094b6dc29742cc98a4bac8bc8f9'
             pass = Crypto.AES.encrypt(Crypto.enc.Utf8.parse(pass), Crypto.enc.Hex.parse(key), { iv: Crypto.enc.Hex.parse(iv) })
 */
-            // let URI2 = 'http://www.anzor.co.nz/anzor_services_rn/'
+            let URI2 = 'http://www.anzor.co.nz/anzor_services_rn/'
             pass = changeURIEncode(pass)
             let url = `${URI2}login?name=${email}&pass=${pass}`
             // console.log(url)
